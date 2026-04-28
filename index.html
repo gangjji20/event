@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
@@ -41,6 +40,7 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 .htl{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem}
 .mbg{display:flex;align-items:center;gap:6px;background:var(--sf2);border-radius:20px;padding:4px 10px;font-size:.78rem;font-weight:600}
 .mdot{width:10px;height:10px;border-radius:50%}
+.leaveBtn{width:auto;padding:6px 10px;border-radius:16px;background:#F5F3EE;color:#7A776F;font-size:.72rem;border:1px solid var(--bd);font-weight:700}
 .mwrap{position:relative;margin:10px;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
 #map{width:100%;height:380px;background:#eee}
 .hud{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;z-index:10}
@@ -52,7 +52,7 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 .panel{display:none;margin:0 10px 10px;background:var(--sf);border-radius:16px;padding:1rem 1.1rem}
 .panel.active{display:block}
 .ptl{font-size:.72rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer}
 .rrow:last-child{border:none}
 .ravt{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
 .rinf{flex:1}.rnm{font-size:.85rem;font-weight:600}.rsb{font-size:.72rem;color:var(--tx2)}.rds{font-size:.75rem;font-weight:700}
@@ -116,10 +116,10 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
     <div style="display:flex;align-items:center;gap:10px">
       <span style="font-size:1.2rem">🐾</span><span class="htl">출근길 발자국</span>
     </div>
-<div style="display:flex;align-items:center;gap:8px">
-  <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
-  <button onclick="leaveRoom()" style="width:auto;padding:6px 10px;border-radius:16px;background:#F5F3EE;color:#7A776F;font-size:.72rem;border:1px solid var(--bd)">나가기</button>
-</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
+      <button class="leaveBtn" onclick="leaveRoom()">나가기</button>
+    </div>
   </div>
   <div class="mwrap">
     <div id="map"></div>
@@ -156,34 +156,26 @@ var SPOTS=[
   {name:'까치네',lat:37.543985,lng:126.970940,emoji:'🍳'},
   {name:'다이소(남영)',lat:37.5421488,lng:126.9718875,emoji:'🛒'}
 ];
+
 var RAD=80;
 var DB='https://event-gangjji-default-rtdb.firebaseio.com/';
 
 var savedId=localStorage.getItem('commuteFootprintUserId');
-var myId=savedId || ('u_'+Math.random().toString(36).slice(2,8));
+var myId=savedId||('u_'+Math.random().toString(36).slice(2,8));
 localStorage.setItem('commuteFootprintUserId',myId);
 
-var watchId=null;
-var demoTimer=null;
 var myName='',myColor=PASTELS[0].hex,mySteps=0;
 var roomCode='',players={},hits=[false,false,false,false,false];
 var firstClaim=false,crossed={},toastT=null;
 var kMap=null,myOvl=null,ovls={},lastLL=null;
 var firstLat=null,firstLng=null;
 var gpsStarted=false,pollingStarted=false;
+var watchId=null,demoTimer=null,pollingTimer=null;
 
-function fbUrl(path){
-  return DB+path.replace(/^\/+/,'')+'.json';
-}
-function fbGet(path){
-  return fetch(fbUrl(path)).then(function(r){return r.json();}).catch(function(){return null;});
-}
-function fbSet(path,data){
-  return fetch(fbUrl(path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
-}
-function fbDelete(path){
-  return fetch(fbUrl(path),{method:'DELETE'}).catch(function(){});
-}
+function fbUrl(path){return DB+path.replace(/^\/+/,'')+'.json';}
+function fbGet(path){return fetch(fbUrl(path)).then(function(r){return r.json();}).catch(function(){return null;});}
+function fbSet(path,data){return fetch(fbUrl(path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});}
+function fbDelete(path){return fetch(fbUrl(path),{method:'DELETE'}).catch(function(){});}
 
 (function(){
   var g=document.getElementById('colorGrid');
@@ -194,7 +186,8 @@ function fbDelete(path){
     s.textContent=i===0?'✓':'';
     s.onclick=function(){
       document.querySelectorAll('.sw').forEach(function(x){x.classList.remove('sel');x.textContent='';});
-      s.classList.add('sel');s.textContent='✓';myColor=c.hex;
+      s.classList.add('sel');s.textContent='✓';
+      myColor=c.hex;
     };
     g.appendChild(s);
   });
@@ -226,25 +219,20 @@ function requestLocation(){
       showToast('위치 공유가 허용됐어요 🐾');
       goStep3();
     },
-    function(err){
-      if(err && err.code===1){
-        showToast('위치 권한이 거부되어 데모 위치로 시작해요.');
-      }else{
-        showToast('위치를 확인하지 못해 데모 위치로 시작해요.');
-      }
+    function(){
+      showToast('위치 권한이 거부되어 데모 위치로 시작해요.');
       useDemoPos();
     },
     {enableHighAccuracy:true,maximumAge:0,timeout:15000}
   );
 }
 
-function useDemoPos(){
-  goStep3();
-}
+function useDemoPos(){goStep3();}
 
 function goStep3(){
   var p=new URLSearchParams(window.location.search);
   roomCode=p.get('room')||Math.random().toString(36).slice(2,7).toUpperCase();
+
   document.getElementById('step2').style.display='none';
   document.getElementById('step3').style.display='block';
   document.getElementById('sd2').className='dot dn';
@@ -263,19 +251,14 @@ function enterMap(){
   document.getElementById('lobby').classList.remove('active');
   document.getElementById('mapscreen').classList.add('active');
 
-  if(!window.kakao || !kakao.maps || !kakao.maps.load){
+  if(!window.kakao||!kakao.maps||!kakao.maps.load){
     showToast('카카오맵 로딩 실패: 앱키와 도메인을 확인해주세요.');
-    console.error('Kakao Maps SDK load failed');
     return;
   }
 
   kakao.maps.load(function(){
-    try{
-      initMap();
-    }catch(e){
-      console.error(e);
-      showToast('지도 초기화 중 문제가 발생했어요.');
-    }
+    try{initMap();}
+    catch(e){console.error(e);showToast('지도 초기화 중 문제가 발생했어요.');}
   });
 }
 
@@ -288,10 +271,7 @@ function initMap(){
     level:4
   });
 
-  setTimeout(function(){
-    if(kMap)kMap.relayout();
-  },300);
-
+  setTimeout(function(){if(kMap)kMap.relayout();},300);
   kMap.setMaxLevel(6);
 
   mkOvl(OFFICE.lat,OFFICE.lng,'<div style="text-align:center;font-size:22px;line-height:1.3">🏢<div style="font-size:9px;background:#FF8FA3;color:#fff;border-radius:8px;padding:2px 6px;font-weight:700;white-space:nowrap">'+OFFICE.name+'</div></div>');
@@ -306,7 +286,7 @@ function initMap(){
   startPolling();
 
   window.addEventListener('beforeunload',function(){
-    fbDelete('/rooms/'+roomCode+'/players/'+myId);
+    stopLocationSharing();
   });
 
   setInterval(updateTime,1000);
@@ -329,9 +309,7 @@ function startGPS(){
   if(gpsStarted)return;
   gpsStarted=true;
 
-  if(firstLat&&firstLng){
-    updatePos(firstLat,firstLng);
-  }
+  if(firstLat&&firstLng)updatePos(firstLat,firstLng);
 
   if(!navigator.geolocation){
     demoMove();
@@ -340,15 +318,11 @@ function startGPS(){
 
   watchId=navigator.geolocation.watchPosition(
     function(p){updatePos(p.coords.latitude,p.coords.longitude);},
-    function(){
-      if(!players[myId])demoMove();
-    },
+    function(){if(!players[myId])demoMove();},
     {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
   );
 
-  if(!firstLat||!firstLng){
-    demoMove();
-  }
+  if(!firstLat||!firstLng)demoMove();
 }
 
 function demoMove(){
@@ -381,7 +355,7 @@ function updatePos(lat,lng){
 
   if(!myOvl){
     myOvl=mkPOvl(lat,lng,myName,myColor,true);
-    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:0,arrived:false};
+    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:mySteps,arrived:false};
   }else{
     myOvl.setPosition(new kakao.maps.LatLng(lat,lng));
     players[myId].lat=lat;
@@ -433,7 +407,7 @@ function startPolling(){
   if(pollingStarted)return;
   pollingStarted=true;
 
-  setInterval(function(){
+  pollingTimer=setInterval(function(){
     fbGet('/rooms/'+roomCode+'/players').then(function(data){
       if(!data)return;
 
@@ -464,62 +438,10 @@ function startPolling(){
         }
       });
 
-// ── 동료 목록 (클릭 시 지도 이동 포함) ──
-function updRoster(){
-  var l=document.getElementById('rosterList');
-  l.innerHTML='';
-
-  Object.keys(players).forEach(function(id){
-    var p=players[id];
-    var row=document.createElement('div');
-    row.className='rrow';
-    row.style.cursor='pointer';
-
-    // 🔥 클릭하면 해당 사람 위치로 이동
-    row.onclick=function(){
-      focusPlayer(id);
-    };
-
-    var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
-    var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
-
-    row.innerHTML=
-      '<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div>'+
-      '<div class="rinf">'+
-        '<div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div>'+
-        '<div class="rsb">발자국 '+(p.steps||0)*7+'개</div>'+
-      '</div>'+
-      '<div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
-
-    l.appendChild(row);
-  });
-}
-
-// ── 특정 사람 위치로 지도 이동 ──
-function focusPlayer(id){
-  var p=players[id];
-
-  if(!p || !p.lat || !p.lng || !kMap){
-    showToast('아직 위치 정보가 없어요.');
-    return;
-  }
-
-  var pos=new kakao.maps.LatLng(p.lat,p.lng);
-
-  // 지도 이동 + 줌
-  kMap.setCenter(pos);
-  kMap.setLevel(3);
-
-  // 🔥 해당 사람 마커 강조
-  if(ovls[id]){
-    ovls[id].setZIndex(20);
-  }
-
-  if(id===myId && myOvl){
-    myOvl.setZIndex(20);
-  }
-
-  showToast(p.name+'님의 위치로 이동했어요 🐾');
+      updRoster();
+      document.getElementById('hudOnline').innerHTML='접속 <strong>'+Object.keys(players).length+'</strong>명';
+    });
+  },2000);
 }
 
 function drawFP(flat,flng,tlat,tlng,color){
@@ -566,12 +488,33 @@ function updRoster(){
     var p=players[id];
     var row=document.createElement('div');
     row.className='rrow';
+
+    row.onclick=function(){focusPlayer(id);};
+
     var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
     var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
 
     row.innerHTML='<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div><div class="rinf"><div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div><div class="rsb">발자국 '+(p.steps||0)*7+'개</div></div><div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
     l.appendChild(row);
   });
+}
+
+function focusPlayer(id){
+  var p=players[id];
+
+  if(!p||!p.lat||!p.lng||!kMap){
+    showToast('아직 위치 정보가 없어요.');
+    return;
+  }
+
+  var pos=new kakao.maps.LatLng(p.lat,p.lng);
+  kMap.setCenter(pos);
+  kMap.setLevel(3);
+
+  if(ovls[id])ovls[id].setZIndex(20);
+  if(id===myId&&myOvl)myOvl.setZIndex(20);
+
+  showToast(p.name+'님의 위치로 이동했어요 🐾');
 }
 
 function addEv(type,msg,tag){
@@ -611,18 +554,8 @@ function updateTime(){
   document.getElementById('hudTime').textContent=n.getHours()+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
 }
 
-function showToast(msg){
-  var t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  clearTimeout(toastT);
-  toastT=setTimeout(function(){
-    t.classList.remove('show');
-  },3000);
-}
-
-      function stopLocationSharing(){
-  if(watchId!==null && navigator.geolocation){
+function stopLocationSharing(){
+  if(watchId!==null&&navigator.geolocation){
     navigator.geolocation.clearWatch(watchId);
     watchId=null;
   }
@@ -632,7 +565,13 @@ function showToast(msg){
     demoTimer=null;
   }
 
+  if(pollingTimer){
+    clearInterval(pollingTimer);
+    pollingTimer=null;
+  }
+
   gpsStarted=false;
+  pollingStarted=false;
 }
 
 function leaveRoom(){
@@ -654,7 +593,16 @@ function leaveRoom(){
     location.href=location.origin+location.pathname;
   },800);
 }
-      
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(function(){
+    t.classList.remove('show');
+  },3000);
+}
 </script>
 
 </body>
