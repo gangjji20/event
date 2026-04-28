@@ -120,6 +120,44 @@ input[type=text]:focus { border-color: var(–accent); background: #fff; }
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl99DugGV66URyGekyMvGNLr8LIrffW8I&language=ko"></script>
 
+<script>
+// 색상 picker - 모듈과 독립적으로 즉시 실행
+var PASTELS_COLORS = [
+  '#FFB3B3','#FFD1A9','#FFF0A0','#B8F0C8','#A9D4FF',
+  '#C9B8FF','#FFB8E8','#A8EDE8','#FFCBB8','#D8C8FF'
+];
+var PASTELS_NAMES = ['로즈','피치','레몬','민트','스카이','라벤더','핑크','아쿠아','살구','퍼플'];
+var selectedColor = PASTELS_COLORS[0];
+
+function buildColorPicker() {
+  var grid = document.getElementById('colorGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  PASTELS_COLORS.forEach(function(hex, i) {
+    var sw = document.createElement('div');
+    sw.className = 'color-swatch' + (i === 0 ? ' selected' : '');
+    sw.style.background = hex;
+    sw.title = PASTELS_NAMES[i];
+    sw.setAttribute('data-color', hex);
+    sw.onclick = function() {
+      document.querySelectorAll('.color-swatch').forEach(function(x){ x.classList.remove('selected'); });
+      sw.classList.add('selected');
+      selectedColor = hex;
+      // 모듈 스크립트의 myColor도 업데이트
+      if (window.__setMyColor) window.__setMyColor(hex);
+    };
+    grid.appendChild(sw);
+  });
+}
+
+// DOM 준비되는 즉시 실행
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', buildColorPicker);
+} else {
+  buildColorPicker();
+}
+</script>
+
 </head>
 <body>
 
@@ -282,25 +320,10 @@ let polylines = {};
 let bingoCircles = [];
 let watchId = null;
 
-// ── 색상 picker ──
-function initColorPicker() {
-  const grid = document.getElementById('colorGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  PASTELS.forEach((c,i) => {
-    const sw = document.createElement('div');
-    sw.className = 'color-swatch' + (i===0?' selected':'');
-    sw.style.background = c.hex;
-    sw.title = c.name;
-    sw.onclick = () => {
-      document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('selected'));
-      sw.classList.add('selected');
-      myColor = c.hex;
-    };
-    grid.appendChild(sw);
-  });
-}
-window.addEventListener('load', initColorPicker);
+// ── 색상 picker ── (별도 일반 스크립트에서 처리, 여기선 myColor 동기화만)
+window.__setMyColor = function(hex) { myColor = hex; };
+// 초기값을 window.selectedColor와 동기화
+if (window.selectedColor) myColor = window.selectedColor;
 // ── Lobby ──
 window.goStep2 = function() {
   const n = document.getElementById('nameInput').value.trim();
@@ -342,6 +365,8 @@ window.copyLink = function() {
 };
 
 window.enterMap = function() {
+  // 색상 최종 동기화
+  if (window.selectedColor) myColor = window.selectedColor;
   document.getElementById('lobby').classList.remove('active');
   document.getElementById('mapscreen').classList.add('active');
   initMap();
