@@ -1,61 +1,562 @@
 <!DOCTYPE html>
 
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8"/>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-
 <title>🐾 출근길 발자국</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
 
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=b2deec6ccd1fac9ff85410f61759d510&autoload=false"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=b2deec6ccd1fac9ff85410f61759d510&autoload=false&libraries=services"></script>
 
 <style>
-
 :root{--bg:#FAFAF7;--sf:#fff;--sf2:#F5F3EE;--bd:rgba(0,0,0,.08);--tx:#2D2A26;--tx2:#7A776F;--tx3:#B0ADA6;--ac:#FF8FA3}
-
 *{box-sizing:border-box;margin:0;padding:0}
-
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
-
 .screen{display:none;min-height:100vh}.screen.active{display:flex;flex-direction:column}
-
 #lobby{align-items:center;justify-content:center;padding:2rem 1.5rem;background:linear-gradient(160deg,#FFF5F8,#F0F8FF,#F5FFF0)}
-
 .card{background:var(--sf);border-radius:28px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
-
-.logo{font-size:3rem;display:block;text-align:center;margin-bottom:.4rem}
-
-.ttl{font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:.2rem;font-family:'Nunito',sans-serif}
-
+.logo{font-size:3rem;display:block;text-align:center;margin-bottom:.4rem;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ttl{font-size:1.6rem;font-weight:800;text-align:center;color:var(--tx);margin-bottom:.2rem;font-family:'Nunito',sans-serif}
 .sub{font-size:.8rem;color:var(--tx2);text-align:center;margin-bottom:2rem}
-
 .steps{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:2rem}
-
-.dot{width:10px;height:10px;border-radius:50%;background:#E0DDD6}
-
+.dot{width:10px;height:10px;border-radius:50%;background:#E0DDD6;transition:all .3s}
 .dot.on{background:var(--ac);transform:scale(1.3)}.dot.dn{background:#B8F0C8}
-
 .ln{width:24px;height:2px;background:#E0DDD6;border-radius:1px}
-
-.lbl{font-size:.72rem;font-weight:700;color:var(--tx3);letter-spacing:1px;margin-bottom:8px}
-
-input[type=text]{width:100%;padding:12px 16px;border:1.5px solid var(--bd);border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;background:var(--sf2);color:var(--tx);outline:none}
-
+.lbl{font-size:.72rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+input[type=text]{width:100%;padding:12px 16px;border:1.5px solid var(--bd);border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;background:var(--sf2);color:var(--tx);outline:none;transition:border-color .2s}
 input[type=text]:focus{border-color:var(--ac);background:#fff}
-
 .cg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 20px}
+.sw{aspect-ratio:1;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:rgba(0,0,0,.5)}
+.sw:hover{transform:scale(1.1)}.sw.sel{border-color:var(--tx);transform:scale(1.15)}
+.btn{width:100%;padding:14px;border-radius:10px;font-size:.95rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none;transition:all .2s}
+.bp{background:var(--tx);color:#fff}.bp:active{opacity:.8}
+.bs{background:transparent;color:var(--tx2);border:1.5px solid var(--bd);margin-top:8px}
+.rbox{background:var(--sf2);border-radius:10px;padding:1rem 1.2rem;margin:12px 0 16px}
+.rcode{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:800;letter-spacing:6px;color:var(--tx)}
+.rlink{font-size:.72rem;color:#7BA8D4;margin-top:4px;word-break:break-all}
+#mapscreen{background:var(--bg)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;background:var(--sf);border-bottom:1px solid var(--bd)}
+.htl{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem}
+.mbg{display:flex;align-items:center;gap:6px;background:var(--sf2);border-radius:20px;padding:4px 10px;font-size:.78rem;font-weight:600}
+.mdot{width:10px;height:10px;border-radius:50%}
+.mwrap{position:relative;margin:10px;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+#map{width:100%;height:380px;background:#eee}
+.hud{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;z-index:10}
+.pill{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:20px;padding:5px 12px;font-size:.72rem;color:var(--tx2);font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08);white-space:nowrap}
+.pill strong{color:var(--tx)}
+.tabs{display:flex;margin:0 10px 8px;background:var(--sf2);border-radius:10px;padding:3px}
+.tb{flex:1;padding:7px;border:none;background:transparent;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--tx2);cursor:pointer;transition:all .2s}
+.tb.active{background:var(--sf);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.panel{display:none;margin:0 10px 10px;background:var(--sf);border-radius:16px;padding:1rem 1.1rem}
+.panel.active{display:block}
+.ptl{font-size:.72rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.rrow:last-child{border:none}
+.ravt{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.rinf{flex:1}.rnm{font-size:.85rem;font-weight:600}.rsb{font-size:.72rem;color:var(--tx2)}.rds{font-size:.75rem;font-weight:700}
+.elist{max-height:150px;overflow-y:auto}
+.erow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.8rem}
+.erow:last-child{border:none}
+.etag{flex-shrink:0;padding:2px 7px;border-radius:10px;font-size:.65rem;font-weight:700}
+.tf{background:#FFF0A0;color:#7A5F00}.tc{background:#A9D4FF;color:#0D4780}
+.tb2{background:#B8F0C8;color:#1A5E2A}.ta{background:#FFD1A9;color:#7A3800}
+.emsg{color:var(--tx2);line-height:1.4;flex:1}.etm{font-size:.65rem;color:var(--tx3);flex-shrink:0}
+.bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.bcell{aspect-ratio:1;border-radius:8px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.6rem;color:var(--tx2);text-align:center;padding:3px;font-weight:600;transition:all .3s}
+.bcell.hit{background:#B8F0C8;border-color:#7DD898;color:#1A5E2A;transform:scale(1.05)}
+.bsb{font-size:.72rem;color:var(--tx3);margin-top:8px;text-align:center}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--tx);color:#fff;border-radius:20px;padding:10px 20px;font-size:.82rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
 
-.sw{aspect-ratio:1;border-radius:50%;cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:rgba(0,0,0,.5)}
+<div id="lobby" class="screen active">
+  <div class="card">
+    <span class="logo">🐾</span>
+    <div class="ttl">출근길 발자국</div>
+    <div class="sub">오늘 출근길도 같이 걸어요</div>
+    <div class="steps">
+      <div class="dot on" id="sd1"></div><div class="ln"></div>
+      <div class="dot" id="sd2"></div><div class="ln"></div>
+      <div class="dot" id="sd3"></div>
+    </div>
+    <div id="step1">
+      <div class="lbl">내 이름</div>
+      <input type="text" id="nameInput" placeholder="이름 입력 (최대 6자)" maxlength="6" autocomplete="off" autocapitalize="off" inputmode="text" style="margin-bottom:16px"/>
+      <div class="lbl">발자국 색상</div>
+      <div class="cg" id="colorGrid"></div>
+      <button class="btn bp" onclick="goStep2()">다음 →</button>
+    </div>
+    <div id="step2" style="display:none;text-align:center">
+      <div style="font-size:3.5rem;margin:1rem 0">📍</div>
+      <p style="font-size:.85rem;color:var(--tx2);line-height:1.6;margin-bottom:1.2rem">위치 공유를 허용하면 내 발자국이<br>동료들 지도에 실시간으로 나타나요</p>
+      <button class="btn bp" onclick="requestLocation()">위치 공유 허용</button>
+      <button class="btn bs" onclick="useDemoPos()">데모 위치로 시작</button>
+    </div>
+    <div id="step3" style="display:none;text-align:center">
+      <p style="font-size:.85rem;color:var(--tx2);margin-bottom:12px">동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️</p>
+      <div class="rbox">
+        <div class="lbl">방 코드</div>
+        <div class="rcode" id="roomCodeDisplay"></div>
+        <div class="rlink" id="roomLinkDisplay"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bs" onclick="copyLink()" style="flex:1;margin-top:0">링크 복사</button>
+        <button class="btn bp" onclick="enterMap()" style="flex:1">지도 열기 →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-.sw.sel{border-color:var(--tx);transform:scale(1.15)}
+<div id="mapscreen" class="screen">
+  <div class="mhdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.2rem">🐾</span><span class="htl">출근길 발자국</span>
+    </div>
+    <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
+  </div>
+  <div class="mwrap">
+    <div id="map"></div>
+    <div class="hud">
+      <div class="pill" id="hudTime">--:--:--</div>
+      <div class="pill">발자국 <strong id="stepCount">0</strong>개</div>
+      <div class="pill" id="hudOnline">접속 <strong>1</strong>명</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tb active" onclick="switchTab('roster')">👥 동료</button>
+    <button class="tb" onclick="switchTab('events')">🎉 이벤트</button>
+    <button class="tb" onclick="switchTab('bingo')">🎯 빙고</button>
+  </div>
+  <div id="panel-roster" class="panel active"><div class="ptl">오늘 출근 현황</div><div id="rosterList"></div></div>
+  <div id="panel-events" class="panel"><div class="ptl">이벤트 피드</div><div class="elist" id="eventFeed"></div></div>
+  <div id="panel-bingo" class="panel"><div class="ptl">나의 출근 빙고</div><div class="bgrid" id="bingoGrid"></div><div class="bsb">장소를 지나가면 자동으로 체크돼요!</div></div>
+</div>
+<div id="toast"></div>
 
-.btn{width:100%;padding:14px;border-radius:10px;font-size:.95rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none}
+<script>
+var PASTELS=[
+  {hex:'#FFB3B3',name:'로즈'},{hex:'#FFD1A9',name:'피치'},{hex:'#FFF0A0',name:'레몬'},
+  {hex:'#B8F0C8',name:'민트'},{hex:'#A9D4FF',name:'스카이'},{hex:'#C9B8FF',name:'라벤더'},
+  {hex:'#FFB8E8',name:'핑크'},{hex:'#A8EDE8',name:'아쿠아'},{hex:'#FFCBB8',name:'살구'},{hex:'#D8C8FF',name:'퍼플'}
+];
 
-.bp{background:var(--tx);color:#fff}
+var OFFICE={lat:37.5412063,lng:126.9695419,name:'서울광역청년센터'};
 
-.bs{background:transparent;color:var(--tx2);border:1.5px solid var
+var SPOTS=[
+  {name:'잇케',lat:37.5401150,lng:126.9676741,emoji:'🎂'},
+  {name:'베이커리무이',lat:37.5396354,lng:126.9668649,emoji:'🥐'},
+  {name:'헤븐스브래드',lat:37.5253467,lng:126.9628472,emoji:'🍞'},
+  {name:'까치네',lat:37.5443320,lng:126.9732218,emoji:'🍳'},
+  {name:'다이소(남영)',lat:37.5421488,lng:126.9718875,emoji:'🛒'}
+];
+
+var RAD=80;
+var DB='https://event-gangjji-default-rtdb.firebaseio.com/';
+
+var myId='u_'+Math.random().toString(36).slice(2,8);
+var myName='',myColor=PASTELS[0].hex,mySteps=0;
+var roomCode='',players={},hits=[false,false,false,false,false];
+var firstClaim=false,crossed={},toastT=null;
+var kMap=null,myOvl=null,ovls={},lastLL=null;
+var firstLat=null,firstLng=null;
+var gpsStarted=false,pollingStarted=false;
+
+function fbUrl(path){
+  return DB+path.replace(/^\/+/,'')+'.json';
+}
+function fbGet(path){
+  return fetch(fbUrl(path)).then(function(r){return r.json();}).catch(function(){return null;});
+}
+function fbSet(path,data){
+  return fetch(fbUrl(path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(){});
+}
+function fbDelete(path){
+  return fetch(fbUrl(path),{method:'DELETE'}).catch(function(){});
+}
+
+(function(){
+  var g=document.getElementById('colorGrid');
+  PASTELS.forEach(function(c,i){
+    var s=document.createElement('div');
+    s.className='sw'+(i===0?' sel':'');
+    s.style.background=c.hex;
+    s.textContent=i===0?'✓':'';
+    s.onclick=function(){
+      document.querySelectorAll('.sw').forEach(function(x){x.classList.remove('sel');x.textContent='';});
+      s.classList.add('sel');s.textContent='✓';myColor=c.hex;
+    };
+    g.appendChild(s);
+  });
+})();
+
+function goStep2(){
+  var n=document.getElementById('nameInput').value.trim();
+  if(!n){showToast('이름을 입력해주세요 😊');return;}
+  myName=n;
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+  document.getElementById('sd1').className='dot dn';
+  document.getElementById('sd2').className='dot on';
+}
+
+function requestLocation(){
+  if(!navigator.geolocation){
+    showToast('위치 기능을 사용할 수 없어 데모 위치로 시작해요.');
+    useDemoPos();
+    return;
+  }
+
+  showToast('위치 권한 요청 중...');
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      firstLat=pos.coords.latitude;
+      firstLng=pos.coords.longitude;
+      showToast('위치 공유가 허용됐어요 🐾');
+      goStep3();
+    },
+    function(err){
+      if(err && err.code===1){
+        showToast('위치 권한이 거부되어 데모 위치로 시작해요.');
+      }else{
+        showToast('위치를 확인하지 못해 데모 위치로 시작해요.');
+      }
+      useDemoPos();
+    },
+    {enableHighAccuracy:true,maximumAge:0,timeout:15000}
+  );
+}
+
+function useDemoPos(){
+  goStep3();
+}
+
+function goStep3(){
+  var p=new URLSearchParams(window.location.search);
+  roomCode=p.get('room')||Math.random().toString(36).slice(2,7).toUpperCase();
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='block';
+  document.getElementById('sd2').className='dot dn';
+  document.getElementById('sd3').className='dot on';
+  document.getElementById('roomCodeDisplay').textContent=roomCode;
+  document.getElementById('roomLinkDisplay').textContent=location.origin+location.pathname+'?room='+roomCode;
+}
+
+function copyLink(){
+  var l=document.getElementById('roomLinkDisplay').textContent;
+  if(navigator.clipboard)navigator.clipboard.writeText(l);
+  showToast('📋 링크 복사 완료!');
+}
+
+function enterMap(){
+  document.getElementById('lobby').classList.remove('active');
+  document.getElementById('mapscreen').classList.add('active');
+
+  if(!window.kakao || !kakao.maps || !kakao.maps.load){
+    showToast('카카오맵 로딩 실패: 앱키와 도메인을 확인해주세요.');
+    console.error('Kakao Maps SDK load failed');
+    return;
+  }
+
+  kakao.maps.load(function(){
+    try{
+      initMap();
+    }catch(e){
+      console.error(e);
+      showToast('지도 초기화 중 문제가 발생했어요.');
+    }
+  });
+}
+
+function initMap(){
+  document.getElementById('myDot').style.background=myColor;
+  document.getElementById('myNameBadge').textContent=myName;
+
+  kMap=new kakao.maps.Map(document.getElementById('map'),{
+    center:new kakao.maps.LatLng(firstLat||37.5370,firstLng||126.9650),
+    level:4
+  });
+
+  setTimeout(function(){
+    if(kMap)kMap.relayout();
+  },300);
+
+  kMap.setMaxLevel(6);
+
+  mkOvl(OFFICE.lat,OFFICE.lng,'<div style="text-align:center;font-size:22px;line-height:1.3">🏢<div style="font-size:9px;background:#FF8FA3;color:#fff;border-radius:8px;padding:2px 6px;font-weight:700;white-space:nowrap">'+OFFICE.name+'</div></div>');
+
+  SPOTS.forEach(function(s){
+    mkOvl(s.lat,s.lng,'<div style="text-align:center;font-size:18px;line-height:1.3">'+s.emoji+'<div style="font-size:9px;background:#FFF0A0;color:#7A5F00;border-radius:8px;padding:2px 5px;font-weight:700;border:1px solid #E8C800;white-space:nowrap">'+s.name+'</div></div>');
+    new kakao.maps.Circle({center:new kakao.maps.LatLng(s.lat,s.lng),radius:RAD,strokeWeight:1.5,strokeColor:'#E8C800',strokeOpacity:.7,fillColor:'#FFF0A0',fillOpacity:.25}).setMap(kMap);
+  });
+
+  initBingo();
+  startGPS();
+  startPolling();
+
+  window.addEventListener('beforeunload',function(){
+    fbDelete('/rooms/'+roomCode+'/players/'+myId);
+  });
+
+  setInterval(updateTime,1000);
+  updateTime();
+}
+
+function mkOvl(lat,lng,html){
+  new kakao.maps.CustomOverlay({position:new kakao.maps.LatLng(lat,lng),content:html,yAnchor:1}).setMap(kMap);
+}
+
+function mkPOvl(lat,lng,name,color,isMe){
+  var em=isMe?'🧑':'👤';
+  var html='<div style="text-align:center;pointer-events:none"><div style="font-size:20px">'+em+'</div><div style="background:'+color+';color:rgba(0,0,0,.6);font-size:9px;font-weight:700;border-radius:10px;padding:2px 7px;white-space:nowrap;font-family:sans-serif">'+name+'</div></div>';
+  var o=new kakao.maps.CustomOverlay({position:new kakao.maps.LatLng(lat,lng),content:html,yAnchor:1,zIndex:isMe?10:5});
+  o.setMap(kMap);
+  return o;
+}
+
+function startGPS(){
+  if(gpsStarted)return;
+  gpsStarted=true;
+
+  if(firstLat&&firstLng){
+    updatePos(firstLat,firstLng);
+  }
+
+  if(!navigator.geolocation){
+    demoMove();
+    return;
+  }
+
+  navigator.geolocation.watchPosition(
+    function(p){updatePos(p.coords.latitude,p.coords.longitude);},
+    function(){
+      if(!players[myId])demoMove();
+    },
+    {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
+  );
+
+  if(!firstLat||!firstLng){
+    demoMove();
+  }
+}
+
+function demoMove(){
+  var lat=OFFICE.lat+(Math.random()-.5)*.012;
+  var lng=OFFICE.lng+(Math.random()-.5)*.012;
+
+  updatePos(lat,lng);
+
+  setInterval(function(){
+    var p=players[myId];
+    if(p&&p.arrived)return;
+    var dl=OFFICE.lat-lat,dg=OFFICE.lng-lng,d=Math.sqrt(dl*dl+dg*dg);
+    if(d<.0001)return;
+    lat+=dl*.04+(Math.random()-.5)*.00005;
+    lng+=dg*.04+(Math.random()-.5)*.00005;
+    updatePos(lat,lng);
+  },1500);
+}
+
+function updatePos(lat,lng){
+  if(!kMap)return;
+
+  if(lastLL)drawFP(lastLL[0],lastLL[1],lat,lng,myColor);
+  lastLL=[lat,lng];
+
+  if(!myOvl){
+    myOvl=mkPOvl(lat,lng,myName,myColor,true);
+    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:0,arrived:false};
+  }else{
+    myOvl.setPosition(new kakao.maps.LatLng(lat,lng));
+    players[myId].lat=lat;
+    players[myId].lng=lng;
+  }
+
+  mySteps++;
+  players[myId].steps=mySteps;
+  document.getElementById('stepCount').textContent=mySteps*7;
+
+  if(hav(lat,lng,OFFICE.lat,OFFICE.lng)<60&&!players[myId].arrived){
+    players[myId].arrived=true;
+    if(!firstClaim){
+      firstClaim=true;
+      addEv('first',myName+'님이 오늘의 첫 발자국 챔피언! 👑','first');
+      showToast('🏆 오늘의 새벽닭!');
+    }else{
+      addEv('arrive',myName+'님 도착! 🏢','arrive');
+      showToast('🏢 출근 완료!');
+    }
+  }
+
+  SPOTS.forEach(function(s,i){
+    if(hits[i])return;
+    if(hav(lat,lng,s.lat,s.lng)<RAD){
+      hits[i]=true;
+      updBingo();
+      addEv('bingo','빙고! '+s.emoji+' '+s.name+' 통과!','bingo');
+      showToast('🎯 '+s.name+' 체크!');
+    }
+  });
+
+  Object.keys(players).forEach(function(id){
+    var p=players[id];
+    if(id===myId||!p.lat)return;
+    if(hav(lat,lng,p.lat,p.lng)<50&&!crossed[id]){
+      crossed[id]=true;
+      addEv('cross',myName+'님과 '+p.name+'님 동선 교차! ☕','cross');
+      showToast('☕ '+p.name+'님과 스쳐 지나갔어요!');
+      setTimeout(function(){delete crossed[id];},30000);
+    }
+  });
+
+  fbSet('/rooms/'+roomCode+'/players/'+myId,{id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:mySteps,arrived:players[myId].arrived});
+  updRoster();
+}
+
+function startPolling(){
+  if(pollingStarted)return;
+  pollingStarted=true;
+
+  setInterval(function(){
+    fbGet('/rooms/'+roomCode+'/players').then(function(data){
+      if(!data)return;
+
+      Object.keys(data).forEach(function(id){
+        var p=data[id];
+        if(id===myId)return;
+
+        var prev=players[id];
+
+        if(!prev){
+          players[id]=Object.assign({},p,{id:id});
+          ovls[id]=mkPOvl(p.lat,p.lng,p.name,p.color,false);
+          addEv('join',p.name+'님이 참여했어요!',null);
+          showToast('🐾 '+p.name+'님이 출근 시작!');
+        }else if(p.lat!==prev.lat||p.lng!==prev.lng){
+          if(prev.lat)drawFP(prev.lat,prev.lng,p.lat,p.lng,p.color);
+          players[id]=Object.assign({},players[id],p,{id:id});
+          if(ovls[id])ovls[id].setPosition(new kakao.maps.LatLng(p.lat,p.lng));
+          if(!prev.arrived&&p.arrived)addEv('arrive',p.name+'님 도착! 🏢','arrive');
+        }
+      });
+
+      Object.keys(players).forEach(function(id){
+        if(id!==myId&&!data[id]){
+          if(ovls[id])ovls[id].setMap(null);
+          delete players[id];
+          delete ovls[id];
+        }
+      });
+
+      updRoster();
+      document.getElementById('hudOnline').innerHTML='접속 <strong>'+Object.keys(players).length+'</strong>명';
+    });
+  },2000);
+}
+
+function drawFP(flat,flng,tlat,tlng,color){
+  if(!kMap)return;
+
+  for(var i=0;i<3;i++){
+    var t=(i+.5)/3;
+    var lat=flat+(tlat-flat)*t;
+    var lng=flng+(tlng-flng)*t;
+    var dl=tlat-flat;
+    var dg=tlng-flng;
+    var n=Math.sqrt(dl*dl+dg*dg)||1;
+    var side=(i%2?-1:1)*.00003;
+
+    new kakao.maps.Circle({
+      center:new kakao.maps.LatLng(lat+dg/n*side,lng-dl/n*side),
+      radius:2.5,
+      strokeWeight:0,
+      strokeOpacity:0,
+      fillColor:color,
+      fillOpacity:.7
+    }).setMap(kMap);
+  }
+}
+
+function initBingo(){updBingo();}
+
+function updBingo(){
+  var g=document.getElementById('bingoGrid');
+  g.innerHTML='';
+  SPOTS.forEach(function(s,i){
+    var c=document.createElement('div');
+    c.className='bcell'+(hits[i]?' hit':'');
+    c.innerHTML=s.emoji+'<br>'+s.name;
+    g.appendChild(c);
+  });
+}
+
+function updRoster(){
+  var l=document.getElementById('rosterList');
+  l.innerHTML='';
+
+  Object.keys(players).forEach(function(id){
+    var p=players[id];
+    var row=document.createElement('div');
+    row.className='rrow';
+    var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
+    var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
+
+    row.innerHTML='<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div><div class="rinf"><div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div><div class="rsb">발자국 '+(p.steps||0)*7+'개</div></div><div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
+    l.appendChild(row);
+  });
+}
+
+function addEv(type,msg,tag){
+  var f=document.getElementById('eventFeed');
+  var r=document.createElement('div');
+  r.className='erow';
+  var now=new Date();
+  var t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  var tm={first:['챔피언','tf'],cross:['교차','tc'],bingo:['빙고','tb2'],arrive:['도착','ta']};
+  var tl=tm[tag]?tm[tag][0]:'';
+  var tc=tm[tag]?tm[tag][1]:'';
+
+  r.innerHTML=(tl?'<span class="etag '+tc+'">'+tl+'</span>':'')+'<span class="emsg">'+msg+'</span><span class="etm">'+t+'</span>';
+  f.prepend(r);
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tb').forEach(function(b,i){
+    b.classList.toggle('active',['roster','events','bingo'][i]===tab);
+  });
+  document.querySelectorAll('.panel').forEach(function(p){
+    p.classList.remove('active');
+  });
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+function hav(a,b,c,d){
+  var R=6371000;
+  var dl=(c-a)*Math.PI/180;
+  var dg=(d-b)*Math.PI/180;
+  var x=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dg/2)*Math.sin(dg/2);
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+
+function updateTime(){
+  var n=new Date();
+  document.getElementById('hudTime').textContent=n.getHours()+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT=setTimeout(function(){
+    t.classList.remove('show');
+  },3000);
+}
+</script>
+
+</body>
+</html>
