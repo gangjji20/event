@@ -451,10 +451,62 @@ function startPolling(){
         }
       });
 
-      updRoster();
-      document.getElementById('hudOnline').innerHTML='접속 <strong>'+Object.keys(players).length+'</strong>명';
-    });
-  },2000);
+// ── 동료 목록 (클릭 시 지도 이동 포함) ──
+function updRoster(){
+  var l=document.getElementById('rosterList');
+  l.innerHTML='';
+
+  Object.keys(players).forEach(function(id){
+    var p=players[id];
+    var row=document.createElement('div');
+    row.className='rrow';
+    row.style.cursor='pointer';
+
+    // 🔥 클릭하면 해당 사람 위치로 이동
+    row.onclick=function(){
+      focusPlayer(id);
+    };
+
+    var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
+    var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
+
+    row.innerHTML=
+      '<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div>'+
+      '<div class="rinf">'+
+        '<div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div>'+
+        '<div class="rsb">발자국 '+(p.steps||0)*7+'개</div>'+
+      '</div>'+
+      '<div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
+
+    l.appendChild(row);
+  });
+}
+
+// ── 특정 사람 위치로 지도 이동 ──
+function focusPlayer(id){
+  var p=players[id];
+
+  if(!p || !p.lat || !p.lng || !kMap){
+    showToast('아직 위치 정보가 없어요.');
+    return;
+  }
+
+  var pos=new kakao.maps.LatLng(p.lat,p.lng);
+
+  // 지도 이동 + 줌
+  kMap.setCenter(pos);
+  kMap.setLevel(3);
+
+  // 🔥 해당 사람 마커 강조
+  if(ovls[id]){
+    ovls[id].setZIndex(20);
+  }
+
+  if(id===myId && myOvl){
+    myOvl.setZIndex(20);
+  }
+
+  showToast(p.name+'님의 위치로 이동했어요 🐾');
 }
 
 function drawFP(flat,flng,tlat,tlng,color){
