@@ -1,796 +1,614 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
 <title>🐾 출근길 발자국</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a64a784c1fee78d6e1ec692e82a80162&autoload=false"></script>
+
 <style>
-:root {
-  --bg: #FAFAF7;
-  --surface: #FFFFFF;
-  --surface2: #F5F3EE;
-  --border: rgba(0,0,0,0.08);
-  --text: #2D2A26;
-  --text2: #7A776F;
-  --text3: #B0ADA6;
-  --accent: #FF8FA3;
-  --radius: 16px;
-  --radius-sm: 10px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-h1,h2,.logo-title { font-family: 'Nunito', sans-serif; }
-
-/* SCREENS */
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
-
-/* LOBBY */
-#lobby { align-items: center; justify-content: center; padding: 2rem 1.5rem; background: linear-gradient(160deg,#FFF5F8 0%,#F0F8FF 50%,#F5FFF0 100%); }
-.lobby-card { background: var(–surface); border-radius: 28px; padding: 2.5rem 2rem; width: 100%; max-width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
-.logo-emoji { font-size: 3rem; display: block; text-align: center; margin-bottom: 0.4rem; animation: bounce 2s ease-in-out infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.logo-title { font-size: 1.6rem; font-weight: 800; text-align: center; color: var(–text); margin-bottom: 0.2rem; }
-.logo-sub { font-size: 0.8rem; color: var(–text2); text-align: center; margin-bottom: 2rem; }
-.steps-bar { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2rem; }
-.step-dot { width: 10px; height: 10px; border-radius: 50%; background: #E0DDD6; transition: all 0.3s; }
-.step-dot.active { background: var(–accent); transform: scale(1.3); }
-.step-dot.done { background: #B8F0C8; }
-.step-line { width: 24px; height: 2px; background: #E0DDD6; border-radius: 1px; }
-.section-label { font-size: 0.72rem; font-weight: 700; color: var(–text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-input[type=text] { width: 100%; padding: 12px 16px; border: 1.5px solid var(–border); border-radius: var(–radius-sm); font-size: 0.95rem; font-family: ‘Noto Sans KR’,sans-serif; background: var(–surface2); color: var(–text); outline: none; transition: border-color 0.2s; }
-input[type=text]:focus { border-color: var(–accent); background: #fff; }
-.color-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin: 12px 0 20px; }
-.color-swatch { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; position: relative; }
-.color-swatch:hover { transform: scale(1.1); }
-.color-swatch.selected { border-color: var(–text); transform: scale(1.15); }
-.color-swatch.selected::after { content:‘✓’; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:rgba(0,0,0,0.5); }
-.btn { width: 100%; padding: 14px; border-radius: var(–radius-sm); font-size: 0.95rem; font-weight: 700; font-family: ‘Noto Sans KR’,sans-serif; cursor: pointer; border: none; transition: all 0.2s; }
-.btn-primary { background: var(–text); color: #fff; }
-.btn-primary:hover { opacity: .85; transform: translateY(-1px); }
-.btn-secondary { background: transparent; color: var(–text2); border: 1.5px solid var(–border); margin-top: 8px; }
-.btn-secondary:hover { background: var(–surface2); }
-.location-icon { font-size: 3.5rem; text-align: center; display: block; margin: 1rem 0; }
-.room-box { background: var(–surface2); border-radius: var(–radius-sm); padding: 1rem 1.2rem; margin: 12px 0 16px; }
-.room-code { font-family: ‘Nunito’,sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: 6px; color: var(–text); }
-.room-link { font-size: 0.72rem; color: #7BA8D4; margin-top: 4px; word-break: break-all; }
-
-/* MAP SCREEN */
-#mapscreen { background: var(–bg); }
-.map-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(–surface); border-bottom: 1px solid var(–border); }
-.map-header-left { display: flex; align-items: center; gap: 10px; }
-.header-title { font-family: ‘Nunito’,sans-serif; font-weight: 800; font-size: 1rem; }
-.my-badge { display: flex; align-items: center; gap: 6px; background: var(–surface2); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; }
-.my-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-/* MAP */
-.map-wrap { position: relative; margin: 10px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-#map { width: 100%; height: 380px; }
-
-/* Footprint/player SVG overlay */
-#overlayCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-
-.map-hud { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10; }
-.hud-pill { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; color: var(–text2); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); white-space: nowrap; }
-.hud-pill strong { color: var(–text); }
-
-/* TABS */
-.tab-bar { display: flex; gap: 0; margin: 0 10px 8px; background: var(–surface2); border-radius: var(–radius-sm); padding: 3px; }
-.tab-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 8px; font-size: 0.78rem; font-weight: 600; color: var(–text2); cursor: pointer; transition: all 0.2s; }
-.tab-btn.active { background: var(–surface); color: var(–text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.panel { display: none; margin: 0 10px 10px; background: var(–surface); border-radius: var(–radius); padding: 1rem 1.1rem; }
-.panel.active { display: block; }
-.panel-title { font-size: 0.72rem; font-weight: 700; color: var(–text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-
-/* ROSTER */
-.roster-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(–border); }
-.roster-row:last-child { border: none; }
-.roster-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-.roster-info { flex: 1; }
-.roster-name { font-size: 0.85rem; font-weight: 600; }
-.roster-sub { font-size: 0.72rem; color: var(–text2); }
-.roster-dist { font-size: 0.75rem; font-weight: 700; }
-
-/* EVENTS */
-.event-list { max-height: 150px; overflow-y: auto; }
-.event-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(–border); font-size: 0.8rem; }
-.event-row:last-child { border: none; }
-.event-tag { flex-shrink: 0; padding: 2px 7px; border-radius: 10px; font-size: 0.65rem; font-weight: 700; }
-.tag-first { background: #FFF0A0; color: #7A5F00; }
-.tag-cross { background: #A9D4FF; color: #0D4780; }
-.tag-bingo { background: #B8F0C8; color: #1A5E2A; }
-.tag-arrive { background: #FFD1A9; color: #7A3800; }
-.event-msg { color: var(–text2); line-height: 1.4; flex: 1; }
-.event-time { font-size: 0.65rem; color: var(–text3); flex-shrink: 0; }
-
-/* BINGO */
-.bingo-wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; }
-.bingo-cell { aspect-ratio: 1; border-radius: 8px; background: var(–surface2); border: 1.5px solid var(–border); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(–text2); text-align: center; padding: 3px; font-weight: 600; transition: all 0.3s; }
-.bingo-cell.hit { background: #B8F0C8; border-color: #7DD898; color: #1A5E2A; transform: scale(1.05); }
-.bingo-sub { font-size: 0.72rem; color: var(–text3); margin-top: 8px; text-align: center; }
-
-/* TOAST */
-#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(–text); color: #fff; border-radius: 20px; padding: 10px 20px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 9999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 90vw; white-space: normal; text-align: center; }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+:root{--bg:#FAFAF7;--sf:#fff;--sf2:#F5F3EE;--bd:rgba(0,0,0,.08);--tx:#2D2A26;--tx2:#7A776F;--tx3:#B0ADA6;--ac:#FF8FA3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh}.screen.active{display:flex;flex-direction:column}
+#lobby{align-items:center;justify-content:center;padding:2rem 1.5rem;background:linear-gradient(160deg,#FFF5F8,#F0F8FF,#F5FFF0)}
+.card{background:var(--sf);border-radius:28px;padding:2.5rem 2rem;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
+.logo{font-size:3rem;display:block;text-align:center;margin-bottom:.4rem;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ttl{font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:.2rem;font-family:'Nunito',sans-serif}
+.sub{font-size:.8rem;color:var(--tx2);text-align:center;margin-bottom:2rem}
+.steps{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:2rem}
+.dot{width:10px;height:10px;border-radius:50%;background:#E0DDD6;transition:all .3s}
+.dot.on{background:var(--ac);transform:scale(1.3)}.dot.dn{background:#B8F0C8}
+.ln{width:24px;height:2px;background:#E0DDD6;border-radius:1px}
+.lbl{font-size:.72rem;font-weight:700;color:var(--tx3);letter-spacing:1px;margin-bottom:8px}
+input[type=text]{width:100%;padding:12px 16px;border:1.5px solid var(--bd);border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;background:var(--sf2);color:var(--tx);outline:none}
+input[type=text]:focus{border-color:var(--ac);background:#fff}
+.cg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0 20px}
+.sw{aspect-ratio:1;border-radius:50%;cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:rgba(0,0,0,.5)}
+.sw.sel{border-color:var(--tx);transform:scale(1.15)}
+.btn{width:100%;padding:14px;border-radius:10px;font-size:.95rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none}
+.bp{background:var(--tx);color:#fff}
+.bs{background:transparent;color:var(--tx2);border:1.5px solid var(--bd);margin-top:8px}
+.rbox{background:var(--sf2);border-radius:10px;padding:1rem 1.2rem;margin:12px 0 16px}
+.rcode{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:800;letter-spacing:6px}
+.rlink{font-size:.72rem;color:#7BA8D4;margin-top:4px;word-break:break-all}
+#mapscreen{background:var(--bg)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;background:var(--sf);border-bottom:1px solid var(--bd)}
+.htl{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem}
+.mbg{display:flex;align-items:center;gap:6px;background:var(--sf2);border-radius:20px;padding:4px 10px;font-size:.78rem;font-weight:600}
+.mdot{width:10px;height:10px;border-radius:50%}
+.mwrap{position:relative;margin:10px;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+#map{width:100%;height:380px;background:#eee}
+.hud{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:5px;z-index:10}
+.pill{background:rgba(255,255,255,.92);border-radius:20px;padding:5px 12px;font-size:.72rem;color:var(--tx2);font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.tabs{display:flex;margin:0 10px 8px;background:var(--sf2);border-radius:10px;padding:3px}
+.tab-btn{flex:1;padding:7px;border:none;background:transparent;border-radius:8px;font-size:.78rem;font-weight:600;color:var(--tx2)}
+.tab-btn.active{background:var(--sf);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.panel{display:none;margin:0 10px 10px;background:var(--sf);border-radius:16px;padding:1rem 1.1rem}
+.panel.active{display:block}
+.ptl{font-size:.72rem;font-weight:700;color:var(--tx3);letter-spacing:.8px;margin-bottom:10px}
+.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.ravt{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.rinf{flex:1}.rnm{font-size:.85rem;font-weight:600}.rsb{font-size:.72rem;color:var(--tx2)}.rds{font-size:.75rem;font-weight:700}
+.elist{max-height:150px;overflow-y:auto}
+.erow{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.8rem}
+.etag{padding:2px 7px;border-radius:10px;font-size:.65rem;font-weight:700}
+.tf{background:#FFF0A0;color:#7A5F00}.tc{background:#A9D4FF;color:#0D4780}.tb2{background:#B8F0C8;color:#1A5E2A}.ta{background:#FFD1A9;color:#7A3800}
+.emsg{color:var(--tx2);line-height:1.4;flex:1}.etm{font-size:.65rem;color:var(--tx3)}
+.bgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.bcell{aspect-ratio:1;border-radius:8px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.6rem;color:var(--tx2);text-align:center;padding:3px;font-weight:600}
+.bcell.hit{background:#B8F0C8;border-color:#7DD898;color:#1A5E2A}
+.bsb{font-size:.72rem;color:var(--tx3);margin-top:8px;text-align:center}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--tx);color:#fff;border-radius:20px;padding:10px 20px;font-size:.82rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
-
-<!-- Google Maps JS API -->
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl99DugGV66URyGekyMvGNLr8LIrffW8I&language=ko"></script>
-
-<script>
-// 색상 picker - 모듈과 독립적으로 즉시 실행
-var PASTELS_COLORS = [
-  '#FFB3B3','#FFD1A9','#FFF0A0','#B8F0C8','#A9D4FF',
-  '#C9B8FF','#FFB8E8','#A8EDE8','#FFCBB8','#D8C8FF'
-];
-var PASTELS_NAMES = ['로즈','피치','레몬','민트','스카이','라벤더','핑크','아쿠아','살구','퍼플'];
-var selectedColor = PASTELS_COLORS[0];
-
-function buildColorPicker() {
-  var grid = document.getElementById('colorGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  PASTELS_COLORS.forEach(function(hex, i) {
-    var sw = document.createElement('div');
-    sw.className = 'color-swatch' + (i === 0 ? ' selected' : '');
-    sw.style.background = hex;
-    sw.title = PASTELS_NAMES[i];
-    sw.setAttribute('data-color', hex);
-    sw.onclick = function() {
-      document.querySelectorAll('.color-swatch').forEach(function(x){ x.classList.remove('selected'); });
-      sw.classList.add('selected');
-      selectedColor = hex;
-      // 모듈 스크립트의 myColor도 업데이트
-      if (window.__setMyColor) window.__setMyColor(hex);
-    };
-    grid.appendChild(sw);
-  });
-}
-
-// DOM 준비되는 즉시 실행
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', buildColorPicker);
-} else {
-  buildColorPicker();
-}
-</script>
-
 </head>
+
 <body>
-
-<!-- LOBBY -->
-
 <div id="lobby" class="screen active">
-  <div class="lobby-card">
-    <span class="logo-emoji">🐾</span>
-    <div class="logo-title">출근길 발자국</div>
-    <div class="logo-sub">오늘 출근길도 같이 걸어요</div>
-    <div class="steps-bar">
-      <div class="step-dot active" id="sd1"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd2"></div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="sd3"></div>
+  <div class="card">
+    <span class="logo">🐾</span>
+    <div class="ttl">출근길 발자국</div>
+    <div class="sub">오늘 출근길도 같이 걸어요</div>
+
+    <div class="steps">
+      <div class="dot on" id="sd1"></div><div class="ln"></div>
+      <div class="dot" id="sd2"></div><div class="ln"></div>
+      <div class="dot" id="sd3"></div>
     </div>
 
-```
-<!-- Step 1 -->
-<div id="step1">
-  <div class="section-label">내 이름</div>
-  <input type="text" id="nameInput" placeholder="이름 입력 (최대 6자)" maxlength="6" style="margin-bottom:16px;"/>
-  <div class="section-label">발자국 색상</div>
-  <div class="color-grid" id="colorGrid"></div>
-  <button class="btn btn-primary" onclick="goStep2()">다음 →</button>
-</div>
+    <div id="step1">
+      <div class="lbl">내 이름</div>
+      <input type="text" id="nameInput" placeholder="이름 입력" maxlength="6" autocomplete="off" autocapitalize="off" inputmode="text" style="margin-bottom:16px"/>
+      <div class="lbl">발자국 색상</div>
+      <div class="cg" id="colorGrid"></div>
+      <button class="btn bp" type="button" onclick="goStep2()">다음 →</button>
+    </div>
 
-<!-- Step 2 -->
-<div id="step2" style="display:none;text-align:center;">
-  <span class="location-icon">📍</span>
-  <p style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:1.2rem;">
-    위치 공유를 허용하면 내 발자국이<br>동료들 지도에 실시간으로 나타나요
-  </p>
-  <button class="btn btn-primary" onclick="requestLocation()">위치 공유 허용</button>
-  <button class="btn btn-secondary" onclick="useDemoPos()">데모 위치로 시작</button>
-</div>
+    <div id="step2" style="display:none;text-align:center">
+      <div style="font-size:3.5rem;margin:1rem 0">📍</div>
+      <p style="font-size:.85rem;color:var(--tx2);line-height:1.6;margin-bottom:1.2rem">
+        위치 공유를 허용하면 내 발자국이<br>동료들 지도에 실시간으로 나타나요
+      </p>
+      <button class="btn bp" type="button" onclick="requestLocation()">위치 공유 허용</button>
+      <button class="btn bs" type="button" onclick="useDemoPos()">데모 위치로 시작</button>
+    </div>
 
-<!-- Step 3 -->
-<div id="step3" style="display:none;text-align:center;">
-  <p style="font-size:0.85rem;color:var(--text2);margin-bottom:12px;">동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️</p>
-  <div class="room-box">
-    <div class="section-label">방 코드</div>
-    <div class="room-code" id="roomCodeDisplay"></div>
-    <div class="room-link" id="roomLinkDisplay"></div>
-  </div>
-  <div style="display:flex;gap:8px;">
-    <button class="btn btn-secondary" onclick="copyLink()" style="flex:1;margin-top:0;">링크 복사</button>
-    <button class="btn btn-primary" onclick="enterMap()" style="flex:1;">지도 열기 →</button>
-  </div>
-</div>
-```
-
+    <div id="step3" style="display:none;text-align:center">
+      <p style="font-size:.85rem;color:var(--tx2);margin-bottom:12px">
+        동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️
+      </p>
+      <div class="rbox">
+        <div class="lbl">방 코드</div>
+        <div class="rcode" id="roomCodeDisplay"></div>
+        <div class="rlink" id="roomLinkDisplay"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn bs" type="button" onclick="copyLink()" style="flex:1;margin-top:0">링크 복사</button>
+        <button class="btn bp" type="button" onclick="enterMap()" style="flex:1">지도 열기 →</button>
+      </div>
+    </div>
   </div>
 </div>
-
-<!-- MAP -->
 
 <div id="mapscreen" class="screen">
-  <div class="map-header">
-    <div class="map-header-left">
-      <span style="font-size:1.2rem;">🐾</span>
-      <span class="header-title">출근길 발자국</span>
+  <div class="mhdr">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.2rem">🐾</span>
+      <span class="htl">출근길 발자국</span>
     </div>
-    <div class="my-badge">
-      <div class="my-dot" id="myDot"></div>
+    <div class="mbg">
+      <div class="mdot" id="myDot"></div>
       <span id="myNameBadge"></span>
     </div>
   </div>
 
-  <div class="map-wrap">
+  <div class="mwrap">
     <div id="map"></div>
-    <div class="map-hud">
-      <div class="hud-pill" id="hudTime">--:--:--</div>
-      <div class="hud-pill">발자국 <strong id="stepCount">0</strong>개</div>
-      <div class="hud-pill" id="hudOnline">접속 <strong>1</strong>명</div>
+    <div class="hud">
+      <div class="pill" id="hudTime">--:--:--</div>
+      <div class="pill">발자국 <strong id="stepCount">0</strong>개</div>
+      <div class="pill" id="hudOnline">접속 <strong>1</strong>명</div>
     </div>
   </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('roster')">👥 동료</button>
-    <button class="tab-btn" onclick="switchTab('events')">🎉 이벤트</button>
-    <button class="tab-btn" onclick="switchTab('bingo')">🎯 빙고</button>
+  <div class="tabs">
+    <button class="tab-btn active" type="button" onclick="switchTab('roster')">👥 동료</button>
+    <button class="tab-btn" type="button" onclick="switchTab('events')">🎉 이벤트</button>
+    <button class="tab-btn" type="button" onclick="switchTab('bingo')">🎯 빙고</button>
   </div>
-  <div id="panel-roster" class="panel active">
-    <div class="panel-title">오늘 출근 현황</div>
-    <div id="rosterList"></div>
-  </div>
-  <div id="panel-events" class="panel">
-    <div class="panel-title">이벤트 피드</div>
-    <div class="event-list" id="eventFeed"></div>
-  </div>
-  <div id="panel-bingo" class="panel">
-    <div class="panel-title">나의 출근 빙고</div>
-    <div class="bingo-wrap" id="bingoGrid"></div>
-    <div class="bingo-sub">아래 장소를 지나가면 자동으로 체크돼요!</div>
-  </div>
+
+  <div id="panel-roster" class="panel active"><div class="ptl">오늘 출근 현황</div><div id="rosterList"></div></div>
+  <div id="panel-events" class="panel"><div class="ptl">이벤트 피드</div><div class="elist" id="eventFeed"></div></div>
+  <div id="panel-bingo" class="panel"><div class="ptl">나의 출근 빙고</div><div class="bgrid" id="bingoGrid"></div><div class="bsb">장소를 지나가면 자동으로 체크돼요!</div></div>
 </div>
 
 <div id="toast"></div>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+<script>
+var PASTELS=[
+  {hex:'#FFB3B3',name:'로즈'},{hex:'#FFD1A9',name:'피치'},{hex:'#FFF0A0',name:'레몬'},
+  {hex:'#B8F0C8',name:'민트'},{hex:'#A9D4FF',name:'스카이'},{hex:'#C9B8FF',name:'라벤더'},
+  {hex:'#FFB8E8',name:'핑크'},{hex:'#A8EDE8',name:'아쿠아'},{hex:'#FFCBB8',name:'살구'},{hex:'#D8C8FF',name:'퍼플'}
+];
 
-// ── Firebase 자동 연결 ──
-const firebaseConfig = {
-  apiKey: "AIzaSyDl99DugGV66URyGekyMvGNLr8LIrffW8I",
-  authDomain: "event-gangjji.firebaseapp.com",
-  databaseURL: "https://event-gangjji-default-rtdb.firebaseio.com",
-  projectId: "event-gangjji",
-  storageBucket: "event-gangjji.firebasestorage.app",
-  messagingSenderId: "1096509686777",
-  appId: "1:1096509686777:web:1f0444ed325ea7c99d3328"
-};
-let db = null;
-let demoMode = false;
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app);
-} catch(e) {
-  console.warn('Firebase 실패, 데모 모드:', e);
-  demoMode = true;
+var OFFICE={lat:37.5412063,lng:126.9695419,name:'서울광역청년센터'};
+var SPOTS=[
+  {name:'잇케',lat:37.5401150,lng:126.9676741,emoji:'🎂'},
+  {name:'베이커리무이',lat:37.5396354,lng:126.9668649,emoji:'🥐'},
+  {name:'헤븐스브래드',lat:37.5253467,lng:126.9628472,emoji:'🍞'},
+  {name:'까치네',lat:37.5443320,lng:126.9732218,emoji:'🍳'},
+  {name:'다이소(남영)',lat:37.5421488,lng:126.9718875,emoji:'🛒'}
+];
+
+var RAD=80;
+var DB='https://event-gangjji-default-rtdb.firebaseio.com/';
+var myId='u_'+Math.random().toString(36).slice(2,8);
+var myName='',myColor=PASTELS[0].hex,mySteps=0;
+var roomCode='',players={},hits=[false,false,false,false,false];
+var firstClaim=false,crossed={},toastT=null;
+var kMap=null,myOvl=null,ovls={},lastLL=null;
+var gpsStarted=false,pollingStarted=false;
+var firstLat=null,firstLng=null;
+
+function fbUrl(path){return DB+path.replace(/^\/+/,'')+'.json';}
+function fbGet(path){return fetch(fbUrl(path)).then(function(r){return r.json();}).catch(function(e){console.error(e);return null;});}
+function fbSet(path,data){return fetch(fbUrl(path),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).catch(function(e){console.error(e);});}
+function fbDelete(path){return fetch(fbUrl(path),{method:'DELETE'}).catch(function(e){console.error(e);});}
+
+(function(){
+  var g=document.getElementById('colorGrid');
+  PASTELS.forEach(function(c,i){
+    var s=document.createElement('div');
+    s.className='sw'+(i===0?' sel':'');
+    s.style.background=c.hex;
+    s.textContent=i===0?'✓':'';
+    s.onclick=function(){
+      document.querySelectorAll('.sw').forEach(function(x){x.classList.remove('sel');x.textContent='';});
+      s.classList.add('sel');s.textContent='✓';myColor=c.hex;
+    };
+    g.appendChild(s);
+  });
+
+  setTimeout(function(){
+    var input=document.getElementById('nameInput');
+    if(input) input.addEventListener('touchstart',function(){input.focus();},{passive:true});
+  },300);
+})();
+
+function goStep2(){
+  var n=document.getElementById('nameInput').value.trim();
+  if(!n){showToast('이름을 입력해주세요 😊');return;}
+  myName=n;
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+  document.getElementById('sd1').className='dot dn';
+  document.getElementById('sd2').className='dot on';
 }
 
-// ── 상수 ──
-const PASTELS = [
-  { hex:'#FFB3B3', name:'로즈' }, { hex:'#FFD1A9', name:'피치' },
-  { hex:'#FFF0A0', name:'레몬' }, { hex:'#B8F0C8', name:'민트' },
-  { hex:'#A9D4FF', name:'스카이' }, { hex:'#C9B8FF', name:'라벤더' },
-  { hex:'#FFB8E8', name:'핑크' }, { hex:'#A8EDE8', name:'아쿠아' },
-  { hex:'#FFCBB8', name:'살구' }, { hex:'#D8C8FF', name:'퍼플' },
-];
+function requestLocation(){
+  if(!navigator.geolocation){
+    showToast('이 브라우저에서는 위치 기능을 사용할 수 없어요.');
+    useDemoPos();
+    return;
+  }
 
-// 실제 좌표 기반 장소
-const OFFICE = { lat: 37.5412063, lng: 126.9695419, name: '서울광역청년센터' };
-const BINGO_SPOTS = [
-  { name: '잇케',       lat: 37.5401150, lng: 126.9676741, emoji: '🎂' },
-  { name: '베이커리무이', lat: 37.5396354, lng: 126.9668649, emoji: '🥐' },
-  { name: '헤븐스브래드', lat: 37.5253467, lng: 126.9628472, emoji: '🍞' },
-  { name: '까치네',     lat: 37.5443320, lng: 126.9732218, emoji: '🍳' },
-  { name: '다이소(남영)', lat: 37.5421488, lng: 126.9718875, emoji: '🛒' },
-];
-// 지도 범위: 효창공원역(37.5393,126.9522) ~ 남영역(37.5416,126.9726) ~ 숙대입구(37.5443,126.9640)
-const BINGO_RADIUS_M = 80; // 80m 이내 진입시 체크
+  showToast('위치 권한 요청 중...');
 
-// ── 상태 ──
-let myId = 'u_' + Math.random().toString(36).slice(2,8);
-let myName = '', myColor = PASTELS[0].hex, mySteps = 0;
-let roomCode = '';
-let players = {};
-let bingoHits = new Array(5).fill(false);
-let firstArrivalClaimed = false;
-let crossedWith = new Set();
-let toastTimer = null;
-let gMap = null;
-let myMarker = null;
-let playerMarkers = {};
-let polylines = {};
-let bingoCircles = [];
-let watchId = null;
-
-// ── 색상 picker ── (별도 일반 스크립트에서 처리, 여기선 myColor 동기화만)
-window.__setMyColor = function(hex) { myColor = hex; };
-// 초기값을 window.selectedColor와 동기화
-if (window.selectedColor) myColor = window.selectedColor;
-// ── Lobby ──
-window.goStep2 = function() {
-  const n = document.getElementById('nameInput').value.trim();
-  if (!n) { showToast('이름을 입력해주세요 😊'); return; }
-  myName = n;
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('step2').style.display = 'block';
-  document.getElementById('sd1').classList.replace('active','done');
-  document.getElementById('sd2').classList.add('active');
-};
-
-window.requestLocation = function() {
-  if (!navigator.geolocation) { useDemoPos(); return; }
-  showToast('위치 확인 중...');
   navigator.geolocation.getCurrentPosition(
-    () => goStep3(),
-    () => { showToast('위치 권한 거부 → 데모 위치 사용'); useDemoPos(); }
+    function(pos){
+      firstLat=pos.coords.latitude;
+      firstLng=pos.coords.longitude;
+      showToast('위치 공유가 허용됐어요 🐾');
+      goStep3();
+    },
+    function(error){
+      if(error.code===1){
+        showToast('위치 권한이 차단됐어요. 사파리 설정에서 위치를 허용해주세요.');
+      }else{
+        showToast('위치를 가져오지 못했어요. 데모 위치로 시작할게요.');
+      }
+      useDemoPos();
+    },
+    {enableHighAccuracy:true,maximumAge:0,timeout:10000}
   );
-};
-
-window.useDemoPos = function() { goStep3(); };
-
-function goStep3() {
-  const params = new URLSearchParams(window.location.search);
-  roomCode = params.get('room') || Math.random().toString(36).slice(2,7).toUpperCase();
-  document.getElementById('step2').style.display = 'none';
-  document.getElementById('step3').style.display = 'block';
-  document.getElementById('sd2').classList.replace('active','done');
-  document.getElementById('sd3').classList.add('active');
-  document.getElementById('roomCodeDisplay').textContent = roomCode;
-  const link = `${location.origin}${location.pathname}?room=${roomCode}`;
-  document.getElementById('roomLinkDisplay').textContent = link;
 }
 
-window.copyLink = function() {
-  const link = document.getElementById('roomLinkDisplay').textContent;
-  if (navigator.clipboard) navigator.clipboard.writeText(link);
-  showToast('📋 링크 복사 완료!');
-};
+function useDemoPos(){goStep3();}
 
-window.enterMap = function() {
-  // 색상 최종 동기화
-  if (window.selectedColor) myColor = window.selectedColor;
+function goStep3(){
+  var p=new URLSearchParams(window.location.search);
+  roomCode=p.get('room')||Math.random().toString(36).slice(2,7).toUpperCase();
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='block';
+  document.getElementById('sd2').className='dot dn';
+  document.getElementById('sd3').className='dot on';
+  document.getElementById('roomCodeDisplay').textContent=roomCode;
+  document.getElementById('roomLinkDisplay').textContent=location.origin+location.pathname+'?room='+roomCode;
+}
+
+function copyLink(){
+  var l=document.getElementById('roomLinkDisplay').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(l);}
+  showToast('📋 링크 복사 완료!');
+}
+
+function enterMap(){
   document.getElementById('lobby').classList.remove('active');
   document.getElementById('mapscreen').classList.add('active');
-  initMap();
-};
 
-// ── Google Map 초기화 ──
-function initMap() {
-  document.getElementById('myDot').style.background = myColor;
-  document.getElementById('myNameBadge').textContent = myName;
+  if(!window.kakao || !kakao.maps || !kakao.maps.load){
+    showToast('카카오맵 로딩 실패: JavaScript 키와 도메인을 확인해주세요.');
+    console.error('Kakao SDK not loaded');
+    return;
+  }
 
-  gMap = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 37.5370, lng: 126.9650 },  // 효창~남영~숙대 중심
-    zoom: 15,
-    disableDefaultUI: true,
-    zoomControl: true,
-    restriction: {
-      latLngBounds: { north: 37.552, south: 37.522, east: 126.980, west: 126.948 },
-      strictBounds: false,
-    },
-    styles: [
-      { featureType:'poi', elementType:'labels', stylers:[{visibility:'off'}] },
-      { featureType:'transit', elementType:'labels', stylers:[{visibility:'off'}] },
-      { featureType:'road', elementType:'geometry', stylers:[{color:'#ffffff'}] },
-      { featureType:'landscape', stylers:[{color:'#EDF4E8'}] },
-      { featureType:'water', stylers:[{color:'#C8E8F8'}] },
-      { featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#fafafa'}] },
-    ]
-  });
-
-  // 회사 마커
-  new google.maps.Marker({
-    position: { lat: OFFICE.lat, lng: OFFICE.lng },
-    map: gMap,
-    title: OFFICE.name,
-    icon: {
-      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="54" viewBox="0 0 44 54">
-          <ellipse cx="22" cy="50" rx="8" ry="4" fill="rgba(0,0,0,0.15)"/>
-          <path d="M22 2 C11 2 3 10 3 20 C3 34 22 50 22 50 C22 50 41 34 41 20 C41 10 33 2 22 2Z" fill="#FF8FA3" stroke="white" stroke-width="2"/>
-          <text x="22" y="26" text-anchor="middle" font-size="18">🏢</text>
-        </svg>`),
-      anchor: new google.maps.Point(22, 50),
+  kakao.maps.load(function(){
+    try{
+      initMap();
+    }catch(e){
+      console.error(e);
+      showToast('지도 초기화 실패');
     }
   });
+}
 
-  // 빙고 장소 마커
-  BINGO_SPOTS.forEach((spot, i) => {
-    const marker = new google.maps.Marker({
-      position: { lat: spot.lat, lng: spot.lng },
-      map: gMap,
-      title: spot.name,
-      icon: {
-        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-          <svg xmlns="http://www.w3.org/2000/svg" width="38" height="48" viewBox="0 0 38 48">
-            <ellipse cx="19" cy="44" rx="6" ry="3" fill="rgba(0,0,0,0.12)"/>
-            <path d="M19 2 C10 2 3 9 3 17 C3 29 19 44 19 44 C19 44 35 29 35 17 C35 9 28 2 19 2Z" fill="#FFF0A0" stroke="#E8C800" stroke-width="1.5"/>
-            <text x="19" y="22" text-anchor="middle" font-size="14">${spot.emoji}</text>
-          </svg>`),
-        anchor: new google.maps.Point(19, 44),
-      }
-    });
-    // 반경 원
-    new google.maps.Circle({
-      center: { lat: spot.lat, lng: spot.lng },
-      radius: BINGO_RADIUS_M,
-      map: gMap,
-      fillColor: '#FFF0A0',
-      fillOpacity: 0.25,
-      strokeColor: '#E8C800',
-      strokeOpacity: 0.6,
-      strokeWeight: 1.5,
-    });
-    // 라벨
-    new google.maps.InfoWindow({
-      content: `<div style="font-family:'Noto Sans KR';font-size:11px;font-weight:700;color:#2D2A26;padding:2px 4px;">${spot.emoji} ${spot.name}</div>`,
-      disableAutoPan: true,
-    }).open(gMap, marker);
+function initMap(){
+  document.getElementById('myDot').style.background=myColor;
+  document.getElementById('myNameBadge').textContent=myName;
+
+  var centerLat=firstLat||37.5370;
+  var centerLng=firstLng||126.9650;
+
+  kMap=new kakao.maps.Map(document.getElementById('map'),{
+    center:new kakao.maps.LatLng(centerLat,centerLng),
+    level:4
+  });
+
+  setTimeout(function(){kMap.relayout();},200);
+  kMap.setMaxLevel(6);
+
+  mkOvl(OFFICE.lat,OFFICE.lng,'<div style="text-align:center;font-size:22px;line-height:1.3">🏢<div style="font-size:9px;background:#FF8FA3;color:#fff;border-radius:8px;padding:2px 6px;font-weight:700;white-space:nowrap">'+OFFICE.name+'</div></div>');
+
+  SPOTS.forEach(function(s){
+    mkOvl(s.lat,s.lng,'<div style="text-align:center;font-size:18px;line-height:1.3">'+s.emoji+'<div style="font-size:9px;background:#FFF0A0;color:#7A5F00;border-radius:8px;padding:2px 5px;font-weight:700;border:1px solid #E8C800;white-space:nowrap">'+s.name+'</div></div>');
+    new kakao.maps.Circle({
+      center:new kakao.maps.LatLng(s.lat,s.lng),
+      radius:RAD,
+      strokeWeight:1.5,
+      strokeColor:'#E8C800',
+      strokeOpacity:.7,
+      fillColor:'#FFF0A0',
+      fillOpacity:.25
+    }).setMap(kMap);
   });
 
   initBingo();
-  initFirebaseSync();
-  startLocationWatch();
-  setInterval(updateHudTime, 1000);
-  updateHudTime();
+  startGPS();
+  startPolling();
 
-  if (demoMode) spawnDemoPlayers();
+  window.addEventListener('beforeunload',function(){
+    fbDelete('/rooms/'+roomCode+'/players/'+myId);
+  });
+
+  setInterval(updateTime,1000);
+  updateTime();
 }
 
-// ── 내 위치 추적 (GPS) ──
-function startLocationWatch() {
-  if (!navigator.geolocation) { useDemoMovement(); return; }
-  watchId = navigator.geolocation.watchPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-      updateMyPosition(lat, lng);
-    },
-    err => {
-      console.warn('GPS 오류:', err);
-      useDemoMovement();
-    },
-    { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
+function mkOvl(lat,lng,html){
+  new kakao.maps.CustomOverlay({
+    position:new kakao.maps.LatLng(lat,lng),
+    content:html,
+    yAnchor:1
+  }).setMap(kMap);
+}
+
+function mkPOvl(lat,lng,name,color,isMe){
+  var em=isMe?'🧑':'👤';
+  var html='<div style="text-align:center;pointer-events:none"><div style="font-size:20px">'+em+'</div><div style="background:'+color+';color:rgba(0,0,0,.6);font-size:9px;font-weight:700;border-radius:10px;padding:2px 7px;white-space:nowrap;font-family:sans-serif">'+name+'</div></div>';
+  var o=new kakao.maps.CustomOverlay({
+    position:new kakao.maps.LatLng(lat,lng),
+    content:html,
+    yAnchor:1,
+    zIndex:isMe?10:5
+  });
+  o.setMap(kMap);
+  return o;
+}
+
+function startGPS(){
+  if(gpsStarted)return;
+  gpsStarted=true;
+
+  if(firstLat&&firstLng){
+    updatePos(firstLat,firstLng);
+  }
+
+  if(!navigator.geolocation){
+    demoMove();
+    return;
+  }
+
+  navigator.geolocation.watchPosition(
+    function(p){updatePos(p.coords.latitude,p.coords.longitude);},
+    function(){demoMove();},
+    {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
   );
 }
 
-function useDemoMovement() {
-  // GPS 없을 때: 회사 근처 임의 위치에서 시작해서 천천히 이동
-  let lat = OFFICE.lat + (Math.random()-0.5)*0.012;
-  let lng = OFFICE.lng + (Math.random()-0.5)*0.012;
-  const interval = setInterval(() => {
-    const p = players[myId];
-    if (p && p.arrived) { clearInterval(interval); return; }
-    const dlat = (OFFICE.lat - lat);
-    const dlng = (OFFICE.lng - lng);
-    const dist = Math.sqrt(dlat*dlat + dlng*dlng);
-    if (dist < 0.0001) return;
-    lat += dlat * 0.04 + (Math.random()-0.5)*0.00005;
-    lng += dlng * 0.04 + (Math.random()-0.5)*0.00005;
-    updateMyPosition(lat, lng);
-  }, 1500);
+function demoMove(){
+  var lat=OFFICE.lat+(Math.random()-.5)*.012;
+  var lng=OFFICE.lng+(Math.random()-.5)*.012;
+
+  updatePos(lat,lng);
+
+  setInterval(function(){
+    var p=players[myId];
+    if(p&&p.arrived)return;
+    var dl=OFFICE.lat-lat,dg=OFFICE.lng-lng,d=Math.sqrt(dl*dl+dg*dg);
+    if(d<.0001)return;
+    lat+=dl*.04+(Math.random()-.5)*.00005;
+    lng+=dg*.04+(Math.random()-.5)*.00005;
+    updatePos(lat,lng);
+  },1500);
 }
 
-let lastLatLng = null;
-function updateMyPosition(lat, lng) {
-  const latlng = new google.maps.LatLng(lat, lng);
+function updatePos(lat,lng){
+  if(!kMap)return;
 
-  // 발자국 그리기
-  if (lastLatLng) {
-    drawFootprintBetween(lastLatLng, latlng, myColor, myId);
-  }
-  lastLatLng = latlng;
+  if(lastLL)drawFP(lastLL[0],lastLL[1],lat,lng,myColor);
+  lastLL=[lat,lng];
 
-  // 내 마커 이동
-  if (!myMarker) {
-    myMarker = createPlayerMarker(myId, lat, lng, myName, myColor, true);
-    players[myId] = { id: myId, name: myName, color: myColor, lat, lng, steps: 0, arrived: false };
-  } else {
-    myMarker.setPosition(latlng);
-    players[myId].lat = lat;
-    players[myId].lng = lng;
+  if(!myOvl){
+    myOvl=mkPOvl(lat,lng,myName,myColor,true);
+    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:0,arrived:false};
+  }else{
+    myOvl.setPosition(new kakao.maps.LatLng(lat,lng));
+    players[myId].lat=lat;
+    players[myId].lng=lng;
   }
 
   mySteps++;
-  players[myId].steps = mySteps;
-  document.getElementById('stepCount').textContent = mySteps * 7;
+  players[myId].steps=mySteps;
+  document.getElementById('stepCount').textContent=mySteps*7;
 
-  // 회사 도착 체크 (반경 50m)
-  const distToOffice = google.maps.geometry
-    ? google.maps.geometry.spherical.computeDistanceBetween(latlng, new google.maps.LatLng(OFFICE.lat, OFFICE.lng))
-    : haversineM(lat, lng, OFFICE.lat, OFFICE.lng);
-
-  if (distToOffice < 60 && !players[myId].arrived) {
-    players[myId].arrived = true;
-    if (!firstArrivalClaimed) {
-      firstArrivalClaimed = true;
-      addEvent('first', `${myName}님이 오늘의 첫 발자국 챔피언! 👑`, 'first');
-      showToast('🏆 오늘의 새벽닭! 첫 번째 출근이에요!');
-    } else {
-      addEvent('arrive', `${myName}님 도착! 🏢`, 'arrive');
+  if(hav(lat,lng,OFFICE.lat,OFFICE.lng)<60&&!players[myId].arrived){
+    players[myId].arrived=true;
+    if(!firstClaim){
+      firstClaim=true;
+      addEv('first',myName+'님이 오늘의 첫 발자국 챔피언! 👑','first');
+      showToast('🏆 오늘의 새벽닭!');
+    }else{
+      addEv('arrive',myName+'님 도착! 🏢','arrive');
       showToast('🏢 출근 완료!');
     }
   }
 
-  // 빙고 체크
-  BINGO_SPOTS.forEach((spot, i) => {
-    if (bingoHits[i]) return;
-    const d = haversineM(lat, lng, spot.lat, spot.lng);
-    if (d < BINGO_RADIUS_M) {
-      bingoHits[i] = true;
-      updateBingo();
-      addEvent('bingo', `빙고! ${spot.emoji} ${spot.name} 통과!`, 'bingo');
-      showToast(`🎯 ${spot.name} 체크!`);
+  SPOTS.forEach(function(s,i){
+    if(hits[i])return;
+    if(hav(lat,lng,s.lat,s.lng)<RAD){
+      hits[i]=true;
+      updBingo();
+      addEv('bingo','빙고! '+s.emoji+' '+s.name+' 통과!','bingo');
+      showToast('🎯 '+s.name+' 체크!');
     }
   });
 
-  // 동선 교차 체크
-  Object.values(players).forEach(p => {
-    if (p.id === myId || !p.lat) return;
-    const d = haversineM(lat, lng, p.lat, p.lng);
-    if (d < 50 && !crossedWith.has(p.id)) {
-      crossedWith.add(p.id);
-      addEvent('cross', `${myName}님과 ${p.name}님 동선 교차! ☕ 커피 한 잔?`, 'cross');
-      showToast(`☕ ${p.name}님과 스쳐 지나갔어요!`);
-      setTimeout(() => crossedWith.delete(p.id), 30000);
+  Object.keys(players).forEach(function(id){
+    var p=players[id];
+    if(id===myId||!p.lat)return;
+    if(hav(lat,lng,p.lat,p.lng)<50&&!crossed[id]){
+      crossed[id]=true;
+      addEv('cross',myName+'님과 '+p.name+'님 동선 교차! ☕','cross');
+      showToast('☕ '+p.name+'님과 스쳐 지나갔어요!');
+      setTimeout(function(){delete crossed[id];},30000);
     }
   });
 
-  // Firebase 동기화
-  if (db && !demoMode) {
-    set(ref(db, `rooms/${roomCode}/players/${myId}`), {
-      name: myName, color: myColor, lat, lng,
-      steps: mySteps, arrived: players[myId].arrived
-    });
-  }
+  fbSet('/rooms/'+roomCode+'/players/'+myId,{
+    name:myName,
+    color:myColor,
+    lat:lat,
+    lng:lng,
+    steps:mySteps,
+    arrived:players[myId].arrived
+  });
 
-  updateRoster();
+  updRoster();
 }
 
-// ── Firebase 실시간 동기화 ──
-function initFirebaseSync() {
-  if (!db || demoMode) return;
-  // 내 presence 등록
-  const myRef = ref(db, `rooms/${roomCode}/players/${myId}`);
-  onDisconnect(myRef).remove();
+function startPolling(){
+  if(pollingStarted)return;
+  pollingStarted=true;
 
-  // 다른 사람 구독
-  onValue(ref(db, `rooms/${roomCode}/players`), snapshot => {
-    const data = snapshot.val() || {};
-    Object.entries(data).forEach(([id, p]) => {
-      if (id === myId) return;
-      const prev = players[id];
-      if (!prev) {
-        // 새 참가자
-        players[id] = { ...p, id, prevLat: p.lat, prevLng: p.lng };
-        playerMarkers[id] = createPlayerMarker(id, p.lat, p.lng, p.name, p.color, false);
-        addEvent('join', `${p.name}님이 참여했어요!`);
-        showToast(`🐾 ${p.name}님이 출근 시작!`);
-      } else {
-        // 위치 업데이트
-        if (p.lat !== prev.lat || p.lng !== prev.lng) {
-          if (prev.lat) {
-            drawFootprintBetween(
-              new google.maps.LatLng(prev.lat, prev.lng),
-              new google.maps.LatLng(p.lat, p.lng),
-              p.color, id
-            );
-          }
-          players[id] = { ...players[id], ...p };
-          if (playerMarkers[id]) {
-            playerMarkers[id].setPosition(new google.maps.LatLng(p.lat, p.lng));
-          }
-          if (!prev.arrived && p.arrived) {
-            addEvent('arrive', `${p.name}님 도착! 🏢`, 'arrive');
-          }
+  setInterval(function(){
+    fbGet('/rooms/'+roomCode+'/players').then(function(data){
+      if(!data)return;
+
+      Object.keys(data).forEach(function(id){
+        var p=data[id];
+        if(id===myId)return;
+
+        var prev=players[id];
+
+        if(!prev){
+          players[id]=Object.assign({},p,{id:id});
+          ovls[id]=mkPOvl(p.lat,p.lng,p.name,p.color,false);
+          addEv('join',p.name+'님이 참여했어요!',null);
+          showToast('🐾 '+p.name+'님이 출근 시작!');
+        }else if(p.lat!==prev.lat||p.lng!==prev.lng){
+          if(prev.lat)drawFP(prev.lat,prev.lng,p.lat,p.lng,p.color);
+          players[id]=Object.assign({},players[id],p);
+          if(ovls[id])ovls[id].setPosition(new kakao.maps.LatLng(p.lat,p.lng));
+          if(!prev.arrived&&p.arrived)addEv('arrive',p.name+'님 도착! 🏢','arrive');
         }
-      }
+      });
+
+      Object.keys(players).forEach(function(id){
+        if(id!==myId&&!data[id]){
+          if(ovls[id])ovls[id].setMap(null);
+          delete players[id];
+          delete ovls[id];
+        }
+      });
+
+      updRoster();
+      document.getElementById('hudOnline').innerHTML='접속 <strong>'+Object.keys(players).length+'</strong>명';
     });
-    // 나간 사람 정리
-    Object.keys(players).forEach(id => {
-      if (id !== myId && !data[id]) {
-        if (playerMarkers[id]) playerMarkers[id].setMap(null);
-        delete players[id];
-        delete playerMarkers[id];
-      }
-    });
-    updateRoster();
-    document.getElementById('hudOnline').innerHTML = `접속 <strong>${Object.keys(players).length}</strong>명`;
-  });
+  },2000);
 }
 
-// ── 발자국 그리기 ──
-function drawFootprintBetween(from, to, color, pid) {
-  if (!gMap) return;
-  // 실제 발걸음처럼 좌우로 살짝 엇갈린 타원 여러 개
-  const steps = 3;
-  for (let i = 0; i < steps; i++) {
-    const t = (i + 0.5) / steps;
-    const lat = from.lat() + (to.lat() - from.lat()) * t;
-    const lng = from.lng() + (to.lng() - from.lng()) * t;
+function drawFP(flat,flng,tlat,tlng,color){
+  if(!kMap)return;
 
-    // 발 방향 (진행 방향의 수직)
-    const dlat = to.lat() - from.lat();
-    const dlng = to.lng() - from.lng();
-    const norm = Math.sqrt(dlat*dlat + dlng*dlng) || 1;
-    const side = (i % 2 === 0 ? 1 : -1) * 0.00003;
-    const footLat = lat + dlng/norm * side;
-    const footLng = lng - dlat/norm * side;
+  for(var i=0;i<3;i++){
+    var t=(i+.5)/3;
+    var lat=flat+(tlat-flat)*t;
+    var lng=flng+(tlng-flng)*t;
+    var dl=tlat-flat;
+    var dg=tlng-flng;
+    var n=Math.sqrt(dl*dl+dg*dg)||1;
+    var side=(i%2?-1:1)*.00003;
 
-    const circle = new google.maps.Circle({
-      center: { lat: footLat, lng: footLng },
-      radius: 2.5,
-      map: gMap,
-      fillColor: color,
-      fillOpacity: 0.7,
-      strokeColor: color,
-      strokeOpacity: 0.3,
-      strokeWeight: 1,
-      clickable: false,
-    });
+    new kakao.maps.Circle({
+      center:new kakao.maps.LatLng(lat+dg/n*side,lng-dl/n*side),
+      radius:2.5,
+      strokeWeight:0,
+      strokeOpacity:0,
+      fillColor:color,
+      fillOpacity:.7
+    }).setMap(kMap);
   }
 }
 
-// ── 플레이어 마커 생성 ──
-function createPlayerMarker(id, lat, lng, name, color, isMe) {
-  const emoji = isMe ? '🧑' : '👤';
-  const svgStr = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="62" viewBox="0 0 52 62">
-      <ellipse cx="26" cy="58" rx="10" ry="4" fill="rgba(0,0,0,0.12)"/>
-      <circle cx="26" cy="22" r="20" fill="${color}" stroke="white" stroke-width="2.5"/>
-      <text x="26" y="28" text-anchor="middle" font-size="18">${emoji}</text>
-      <rect x="6" y="40" width="40" height="16" rx="8" fill="${color}" opacity="0.95"/>
-      <text x="26" y="52" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.6)" font-family="Noto Sans KR" font-weight="700">${name}</text>
-    </svg>`;
-  return new google.maps.Marker({
-    position: { lat, lng },
-    map: gMap,
-    icon: {
-      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgStr),
-      anchor: new google.maps.Point(26, 58),
-    },
-    title: name,
-    zIndex: isMe ? 999 : 100,
+function initBingo(){updBingo();}
+
+function updBingo(){
+  var g=document.getElementById('bingoGrid');
+  g.innerHTML='';
+  SPOTS.forEach(function(s,i){
+    var c=document.createElement('div');
+    c.className='bcell'+(hits[i]?' hit':'');
+    c.innerHTML=s.emoji+'<br>'+s.name;
+    g.appendChild(c);
   });
 }
 
-// ── 데모 플레이어 ──
-function spawnDemoPlayers() {
-  const demos = [
-    { name:'지수', color:'#A9D4FF' },
-    { name:'민준', color:'#B8F0C8' },
-    { name:'하은', color:'#FFD1A9' },
-  ];
-  demos.forEach((d, i) => {
-    const id = 'demo_' + i;
-    let lat = OFFICE.lat + (Math.random()-0.5)*0.015;
-    let lng = OFFICE.lng + (Math.random()-0.5)*0.015;
-    players[id] = { id, name: d.name, color: d.color, lat, lng, steps: 0, arrived: false };
-    playerMarkers[id] = createPlayerMarker(id, lat, lng, d.name, d.color, false);
-    addEvent('join', `${d.name}님이 출근 시작!`);
+function updRoster(){
+  var l=document.getElementById('rosterList');
+  l.innerHTML='';
 
-    let prevLL = new google.maps.LatLng(lat, lng);
-    const iv = setInterval(() => {
-      if (players[id]?.arrived) { clearInterval(iv); return; }
-      const dlat = OFFICE.lat - lat, dlng = OFFICE.lng - lng;
-      const dist = Math.sqrt(dlat*dlat+dlng*dlng);
-      if (dist < 0.0003) {
-        players[id].arrived = true;
-        addEvent('arrive', `${d.name}님 도착! 🏢`, 'arrive');
-        clearInterval(iv); return;
-      }
-      lat += dlat*0.05 + (Math.random()-0.5)*0.0002;
-      lng += dlng*0.05 + (Math.random()-0.5)*0.0002;
-      const newLL = new google.maps.LatLng(lat, lng);
-      drawFootprintBetween(prevLL, newLL, d.color, id);
-      prevLL = newLL;
-      players[id].lat = lat; players[id].lng = lng;
-      if (playerMarkers[id]) playerMarkers[id].setPosition(newLL);
-      players[id].steps++;
-      updateRoster();
-    }, 1200 + i*300);
-  });
-  updateRoster();
-}
+  Object.keys(players).forEach(function(id){
+    var p=players[id];
+    var row=document.createElement('div');
+    row.className='rrow';
+    var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
+    var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
 
-// ── 빙고 ──
-function initBingo() { updateBingo(); }
-function updateBingo() {
-  const grid = document.getElementById('bingoGrid');
-  grid.innerHTML = '';
-  BINGO_SPOTS.forEach((spot, i) => {
-    const cell = document.createElement('div');
-    cell.className = 'bingo-cell' + (bingoHits[i]?' hit':'');
-    cell.textContent = spot.emoji + '\n' + spot.name;
-    cell.style.whiteSpace = 'pre';
-    grid.appendChild(cell);
+    row.innerHTML=
+      '<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div>'+
+      '<div class="rinf">'+
+      '<div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div>'+
+      '<div class="rsb">발자국 '+(p.steps||0)*7+'개</div>'+
+      '</div>'+
+      '<div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
+
+    l.appendChild(row);
   });
 }
 
-// ── 동료 목록 ──
-function updateRoster() {
-  const list = document.getElementById('rosterList');
-  list.innerHTML = '';
-  const officeLL = { lat: OFFICE.lat, lng: OFFICE.lng };
-  Object.values(players).forEach(p => {
-    const row = document.createElement('div');
-    row.className = 'roster-row';
-    const dist = p.lat ? Math.round(haversineM(p.lat, p.lng, OFFICE.lat, OFFICE.lng)) : '?';
-    const distText = p.arrived ? '✓ 도착' : (typeof dist==='number' ? `${dist}m 남음` : '-');
-    row.innerHTML = `
-      <div class="roster-avatar" style="background:${p.color}30;">${p.arrived?'😊':'🚶'}</div>
-      <div class="roster-info">
-        <div class="roster-name">${p.name}${p.id===myId?' <span style="font-size:0.65rem;color:var(--text3);">(나)</span>':''}</div>
-        <div class="roster-sub">발자국 ${(p.steps||0)*7}개</div>
-      </div>
-      <div class="roster-dist" style="color:${p.arrived?'#3B6D11':'var(--text2)'};">${distText}</div>`;
-    list.appendChild(row);
+function addEv(type,msg,tag){
+  var f=document.getElementById('eventFeed');
+  var r=document.createElement('div');
+  r.className='erow';
+
+  var now=new Date();
+  var t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+
+  var tm={
+    first:['챔피언','tf'],
+    cross:['교차','tc'],
+    bingo:['빙고','tb2'],
+    arrive:['도착','ta']
+  };
+
+  var tl=tm[tag]?tm[tag][0]:'';
+  var tc=tm[tag]?tm[tag][1]:'';
+
+  r.innerHTML=(tl?'<span class="etag '+tc+'">'+tl+'</span>':'')+
+    '<span class="emsg">'+msg+'</span>'+
+    '<span class="etm">'+t+'</span>';
+
+  f.prepend(r);
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){
+    b.classList.toggle('active',['roster','events','bingo'][i]===tab);
   });
-}
 
-// ── 이벤트 ──
-function addEvent(type, msg, tag) {
-  const feed = document.getElementById('eventFeed');
-  const row = document.createElement('div');
-  row.className = 'event-row';
-  const now = new Date();
-  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  const tagMap = { first:['챔피언','tag-first'], cross:['교차','tag-cross'], bingo:['빙고','tag-bingo'], arrive:['도착','tag-arrive'] };
-  const [tl, tc] = tagMap[tag]||['',''];
-  row.innerHTML = `${tl?`<span class="event-tag ${tc}">${tl}</span>`:''}
-    <span class="event-msg">${msg}</span>
-    <span class="event-time">${time}</span>`;
-  feed.prepend(row);
-}
+  document.querySelectorAll('.panel').forEach(function(p){
+    p.classList.remove('active');
+  });
 
-// ── 탭 ──
-window.switchTab = function(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['roster','events','bingo'][i]===tab));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
-};
-
-// ── 유틸 ──
-function haversineM(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = (lat2-lat1)*Math.PI/180;
-  const dLng = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-function updateHudTime() {
-  const now = new Date();
-  document.getElementById('hudTime').textContent =
-    `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+function hav(a,b,c,d){
+  var R=6371000;
+  var dl=(c-a)*Math.PI/180;
+  var dg=(d-b)*Math.PI/180;
+
+  var x=Math.sin(dl/2)*Math.sin(dl/2)+
+    Math.cos(a*Math.PI/180)*
+    Math.cos(c*Math.PI/180)*
+    Math.sin(dg/2)*Math.sin(dg/2);
+
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
+function updateTime(){
+  var n=new Date();
+  document.getElementById('hudTime').textContent=
+    n.getHours()+':'+
+    String(n.getMinutes()).padStart(2,'0')+':'+
+    String(n.getSeconds()).padStart(2,'0');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
   t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
+
+  clearTimeout(toastT);
+  toastT=setTimeout(function(){
+    t.classList.remove('show');
+  },3000);
 }
 </script>
-
 </body>
 </html>
