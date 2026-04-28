@@ -116,7 +116,10 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
     <div style="display:flex;align-items:center;gap:10px">
       <span style="font-size:1.2rem">🐾</span><span class="htl">출근길 발자국</span>
     </div>
-    <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
+<div style="display:flex;align-items:center;gap:8px">
+  <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
+  <button onclick="leaveRoom()" style="width:auto;padding:6px 10px;border-radius:16px;background:#F5F3EE;color:#7A776F;font-size:.72rem;border:1px solid var(--bd)">나가기</button>
+</div>
   </div>
   <div class="mwrap">
     <div id="map"></div>
@@ -156,7 +159,12 @@ var SPOTS=[
 var RAD=80;
 var DB='https://event-gangjji-default-rtdb.firebaseio.com/';
 
-var myId='u_'+Math.random().toString(36).slice(2,8);
+var savedId=localStorage.getItem('commuteFootprintUserId');
+var myId=savedId || ('u_'+Math.random().toString(36).slice(2,8));
+localStorage.setItem('commuteFootprintUserId',myId);
+
+var watchId=null;
+var demoTimer=null;
 var myName='',myColor=PASTELS[0].hex,mySteps=0;
 var roomCode='',players={},hits=[false,false,false,false,false];
 var firstClaim=false,crossed={},toastT=null;
@@ -330,7 +338,7 @@ function startGPS(){
     return;
   }
 
-  navigator.geolocation.watchPosition(
+  watchId=navigator.geolocation.watchPosition(
     function(p){updatePos(p.coords.latitude,p.coords.longitude);},
     function(){
       if(!players[myId])demoMove();
@@ -344,18 +352,23 @@ function startGPS(){
 }
 
 function demoMove(){
+  if(demoTimer)return;
+
   var lat=OFFICE.lat+(Math.random()-.5)*.012;
   var lng=OFFICE.lng+(Math.random()-.5)*.012;
 
   updatePos(lat,lng);
 
-  setInterval(function(){
+  demoTimer=setInterval(function(){
     var p=players[myId];
     if(p&&p.arrived)return;
+
     var dl=OFFICE.lat-lat,dg=OFFICE.lng-lng,d=Math.sqrt(dl*dl+dg*dg);
     if(d<.0001)return;
+
     lat+=dl*.04+(Math.random()-.5)*.00005;
     lng+=dg*.04+(Math.random()-.5)*.00005;
+
     updatePos(lat,lng);
   },1500);
 }
@@ -607,6 +620,41 @@ function showToast(msg){
     t.classList.remove('show');
   },3000);
 }
+
+      function stopLocationSharing(){
+  if(watchId!==null && navigator.geolocation){
+    navigator.geolocation.clearWatch(watchId);
+    watchId=null;
+  }
+
+  if(demoTimer){
+    clearInterval(demoTimer);
+    demoTimer=null;
+  }
+
+  gpsStarted=false;
+}
+
+function leaveRoom(){
+  stopLocationSharing();
+
+  fbDelete('/rooms/'+roomCode+'/players/'+myId);
+
+  if(myOvl){
+    myOvl.setMap(null);
+    myOvl=null;
+  }
+
+  delete players[myId];
+  updRoster();
+
+  showToast('방을 나갔어요. 위치 공유가 중지됐어요.');
+
+  setTimeout(function(){
+    location.href=location.origin+location.pathname;
+  },800);
+}
+      
 </script>
 
 </body>
