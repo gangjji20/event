@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/>
@@ -21,80 +22,109 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 h1,h2,.logo-title { font-family: 'Nunito', sans-serif; }
+
+/* SCREENS */
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
+
+/* LOBBY */
 #lobby { align-items: center; justify-content: center; padding: 2rem 1.5rem; background: linear-gradient(160deg,#FFF5F8 0%,#F0F8FF 50%,#F5FFF0 100%); }
-.lobby-card { background: var(--surface); border-radius: 28px; padding: 2.5rem 2rem; width: 100%; max-width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+.lobby-card { background: var(–surface); border-radius: 28px; padding: 2.5rem 2rem; width: 100%; max-width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
 .logo-emoji { font-size: 3rem; display: block; text-align: center; margin-bottom: 0.4rem; animation: bounce 2s ease-in-out infinite; }
 @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.logo-title { font-size: 1.6rem; font-weight: 800; text-align: center; color: var(--text); margin-bottom: 0.2rem; }
-.logo-sub { font-size: 0.8rem; color: var(--text2); text-align: center; margin-bottom: 2rem; }
+.logo-title { font-size: 1.6rem; font-weight: 800; text-align: center; color: var(–text); margin-bottom: 0.2rem; }
+.logo-sub { font-size: 0.8rem; color: var(–text2); text-align: center; margin-bottom: 2rem; }
 .steps-bar { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2rem; }
 .step-dot { width: 10px; height: 10px; border-radius: 50%; background: #E0DDD6; transition: all 0.3s; }
-.step-dot.active { background: var(--accent); transform: scale(1.3); }
+.step-dot.active { background: var(–accent); transform: scale(1.3); }
 .step-dot.done { background: #B8F0C8; }
 .step-line { width: 24px; height: 2px; background: #E0DDD6; border-radius: 1px; }
-.section-label { font-size: 0.72rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-input[type=text] { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 0.95rem; font-family: 'Noto Sans KR',sans-serif; background: var(--surface2); color: var(--text); outline: none; transition: border-color 0.2s; }
-input[type=text]:focus { border-color: var(--accent); background: #fff; }
+.section-label { font-size: 0.72rem; font-weight: 700; color: var(–text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+input[type=text] { width: 100%; padding: 12px 16px; border: 1.5px solid var(–border); border-radius: var(–radius-sm); font-size: 0.95rem; font-family: ‘Noto Sans KR’,sans-serif; background: var(–surface2); color: var(–text); outline: none; transition: border-color 0.2s; }
+input[type=text]:focus { border-color: var(–accent); background: #fff; }
 .color-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin: 12px 0 20px; }
 .color-swatch { aspect-ratio: 1; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; position: relative; }
 .color-swatch:hover { transform: scale(1.1); }
-.color-swatch.selected { border-color: var(--text); transform: scale(1.15); }
-.color-swatch.selected::after { content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:rgba(0,0,0,0.5); }
-.btn { width: 100%; padding: 14px; border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 700; font-family: 'Noto Sans KR',sans-serif; cursor: pointer; border: none; transition: all 0.2s; }
-.btn-primary { background: var(--text); color: #fff; }
+.color-swatch.selected { border-color: var(–text); transform: scale(1.15); }
+.color-swatch.selected::after { content:‘✓’; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:rgba(0,0,0,0.5); }
+.btn { width: 100%; padding: 14px; border-radius: var(–radius-sm); font-size: 0.95rem; font-weight: 700; font-family: ‘Noto Sans KR’,sans-serif; cursor: pointer; border: none; transition: all 0.2s; }
+.btn-primary { background: var(–text); color: #fff; }
 .btn-primary:hover { opacity: .85; transform: translateY(-1px); }
-.btn-secondary { background: transparent; color: var(--text2); border: 1.5px solid var(--border); margin-top: 8px; }
-.btn-secondary:hover { background: var(--surface2); }
+.btn-secondary { background: transparent; color: var(–text2); border: 1.5px solid var(–border); margin-top: 8px; }
+.btn-secondary:hover { background: var(–surface2); }
 .location-icon { font-size: 3.5rem; text-align: center; display: block; margin: 1rem 0; }
-.room-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 1rem 1.2rem; margin: 12px 0 16px; }
-.room-code { font-family: 'Nunito',sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: 6px; color: var(--text); }
+.room-box { background: var(–surface2); border-radius: var(–radius-sm); padding: 1rem 1.2rem; margin: 12px 0 16px; }
+.room-code { font-family: ‘Nunito’,sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: 6px; color: var(–text); }
 .room-link { font-size: 0.72rem; color: #7BA8D4; margin-top: 4px; word-break: break-all; }
-#mapscreen { background: var(--bg); }
-.map-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(--surface); border-bottom: 1px solid var(--border); }
+
+/* MAP SCREEN */
+#mapscreen { background: var(–bg); }
+.map-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; background: var(–surface); border-bottom: 1px solid var(–border); }
 .map-header-left { display: flex; align-items: center; gap: 10px; }
-.header-title { font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 1rem; }
-.my-badge { display: flex; align-items: center; gap: 6px; background: var(--surface2); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; }
+.header-title { font-family: ‘Nunito’,sans-serif; font-weight: 800; font-size: 1rem; }
+.my-badge { display: flex; align-items: center; gap: 6px; background: var(–surface2); border-radius: 20px; padding: 4px 10px; font-size: 0.78rem; font-weight: 600; }
 .my-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* MAP */
 .map-wrap { position: relative; margin: 10px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
 #map { width: 100%; height: 380px; }
+
+/* Footprint/player SVG overlay */
+#overlayCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
 .map-hud { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10; }
-.hud-pill { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; color: var(--text2); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); white-space: nowrap; }
-.hud-pill strong { color: var(--text); }
-.tab-bar { display: flex; gap: 0; margin: 0 10px 8px; background: var(--surface2); border-radius: var(--radius-sm); padding: 3px; }
-.tab-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.2s; }
-.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.panel { display: none; margin: 0 10px 10px; background: var(--surface); border-radius: var(--radius); padding: 1rem 1.1rem; }
+.hud-pill { background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; color: var(–text2); font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.08); white-space: nowrap; }
+.hud-pill strong { color: var(–text); }
+
+/* TABS */
+.tab-bar { display: flex; gap: 0; margin: 0 10px 8px; background: var(–surface2); border-radius: var(–radius-sm); padding: 3px; }
+.tab-btn { flex: 1; padding: 7px; border: none; background: transparent; border-radius: 8px; font-size: 0.78rem; font-weight: 600; color: var(–text2); cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { background: var(–surface); color: var(–text); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.panel { display: none; margin: 0 10px 10px; background: var(–surface); border-radius: var(–radius); padding: 1rem 1.1rem; }
 .panel.active { display: block; }
-.panel-title { font-size: 0.72rem; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-.roster-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.panel-title { font-size: 0.72rem; font-weight: 700; color: var(–text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+
+/* ROSTER */
+.roster-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(–border); }
 .roster-row:last-child { border: none; }
 .roster-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
 .roster-info { flex: 1; }
 .roster-name { font-size: 0.85rem; font-weight: 600; }
-.roster-sub { font-size: 0.72rem; color: var(--text2); }
+.roster-sub { font-size: 0.72rem; color: var(–text2); }
 .roster-dist { font-size: 0.75rem; font-weight: 700; }
+
+/* EVENTS */
 .event-list { max-height: 150px; overflow-y: auto; }
-.event-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+.event-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(–border); font-size: 0.8rem; }
 .event-row:last-child { border: none; }
 .event-tag { flex-shrink: 0; padding: 2px 7px; border-radius: 10px; font-size: 0.65rem; font-weight: 700; }
 .tag-first { background: #FFF0A0; color: #7A5F00; }
 .tag-cross { background: #A9D4FF; color: #0D4780; }
 .tag-bingo { background: #B8F0C8; color: #1A5E2A; }
 .tag-arrive { background: #FFD1A9; color: #7A3800; }
-.event-msg { color: var(--text2); line-height: 1.4; flex: 1; }
-.event-time { font-size: 0.65rem; color: var(--text3); flex-shrink: 0; }
+.event-msg { color: var(–text2); line-height: 1.4; flex: 1; }
+.event-time { font-size: 0.65rem; color: var(–text3); flex-shrink: 0; }
+
+/* BINGO */
 .bingo-wrap { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; }
-.bingo-cell { aspect-ratio: 1; border-radius: 8px; background: var(--surface2); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--text2); text-align: center; padding: 3px; font-weight: 600; transition: all 0.3s; }
+.bingo-cell { aspect-ratio: 1; border-radius: 8px; background: var(–surface2); border: 1.5px solid var(–border); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(–text2); text-align: center; padding: 3px; font-weight: 600; transition: all 0.3s; }
 .bingo-cell.hit { background: #B8F0C8; border-color: #7DD898; color: #1A5E2A; transform: scale(1.05); }
-.bingo-sub { font-size: 0.72rem; color: var(--text3); margin-top: 8px; text-align: center; }
-#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--text); color: #fff; border-radius: 20px; padding: 10px 20px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 90vw; white-space: normal; text-align: center; }
+.bingo-sub { font-size: 0.72rem; color: var(–text3); margin-top: 8px; text-align: center; }
+
+/* TOAST */
+#toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(–text); color: #fff; border-radius: 20px; padding: 10px 20px; font-size: 0.82rem; font-weight: 600; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 9999; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.2); max-width: 90vw; white-space: normal; text-align: center; }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
+
+<!-- Google Maps JS API -->
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl99DugGV66URyGekyMvGNLr8LIrffW8I&language=ko"></script>
+
 </head>
 <body>
+
+<!-- LOBBY -->
+
 <div id="lobby" class="screen active">
   <div class="lobby-card">
     <span class="logo-emoji">🐾</span>
@@ -107,33 +137,47 @@ input[type=text]:focus { border-color: var(--accent); background: #fff; }
       <div class="step-line"></div>
       <div class="step-dot" id="sd3"></div>
     </div>
-    <div id="step1">
-      <div class="section-label">내 이름</div>
-      <input type="text" id="nameInput" placeholder="이름 입력 (최대 6자)" maxlength="6" style="margin-bottom:16px;"/>
-      <div class="section-label">발자국 색상</div>
-      <div class="color-grid" id="colorGrid"></div>
-      <button class="btn btn-primary" onclick="goStep2()">다음 →</button>
-    </div>
-    <div id="step2" style="display:none;text-align:center;">
-      <span class="location-icon">📍</span>
-      <p style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:1.2rem;">위치 공유를 허용하면 내 발자국이<br>동료들 지도에 실시간으로 나타나요</p>
-      <button class="btn btn-primary" onclick="requestLocation()">위치 공유 허용</button>
-      <button class="btn btn-secondary" onclick="useDemoPos()">데모 위치로 시작</button>
-    </div>
-    <div id="step3" style="display:none;text-align:center;">
-      <p style="font-size:0.85rem;color:var(--text2);margin-bottom:12px;">동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️</p>
-      <div class="room-box">
-        <div class="section-label">방 코드</div>
-        <div class="room-code" id="roomCodeDisplay"></div>
-        <div class="room-link" id="roomLinkDisplay"></div>
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-secondary" onclick="copyLink()" style="flex:1;margin-top:0;">링크 복사</button>
-        <button class="btn btn-primary" onclick="enterMap()" style="flex:1;">지도 열기 →</button>
-      </div>
-    </div>
+
+```
+<!-- Step 1 -->
+<div id="step1">
+  <div class="section-label">내 이름</div>
+  <input type="text" id="nameInput" placeholder="이름 입력 (최대 6자)" maxlength="6" style="margin-bottom:16px;"/>
+  <div class="section-label">발자국 색상</div>
+  <div class="color-grid" id="colorGrid"></div>
+  <button class="btn btn-primary" onclick="goStep2()">다음 →</button>
+</div>
+
+<!-- Step 2 -->
+<div id="step2" style="display:none;text-align:center;">
+  <span class="location-icon">📍</span>
+  <p style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:1.2rem;">
+    위치 공유를 허용하면 내 발자국이<br>동료들 지도에 실시간으로 나타나요
+  </p>
+  <button class="btn btn-primary" onclick="requestLocation()">위치 공유 허용</button>
+  <button class="btn btn-secondary" onclick="useDemoPos()">데모 위치로 시작</button>
+</div>
+
+<!-- Step 3 -->
+<div id="step3" style="display:none;text-align:center;">
+  <p style="font-size:0.85rem;color:var(--text2);margin-bottom:12px;">동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️</p>
+  <div class="room-box">
+    <div class="section-label">방 코드</div>
+    <div class="room-code" id="roomCodeDisplay"></div>
+    <div class="room-link" id="roomLinkDisplay"></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="copyLink()" style="flex:1;margin-top:0;">링크 복사</button>
+    <button class="btn btn-primary" onclick="enterMap()" style="flex:1;">지도 열기 →</button>
   </div>
 </div>
+```
+
+  </div>
+</div>
+
+<!-- MAP -->
+
 <div id="mapscreen" class="screen">
   <div class="map-header">
     <div class="map-header-left">
@@ -145,6 +189,7 @@ input[type=text]:focus { border-color: var(--accent); background: #fff; }
       <span id="myNameBadge"></span>
     </div>
   </div>
+
   <div class="map-wrap">
     <div id="map"></div>
     <div class="map-hud">
@@ -153,6 +198,7 @@ input[type=text]:focus { border-color: var(--accent); background: #fff; }
       <div class="hud-pill" id="hudOnline">접속 <strong>1</strong>명</div>
     </div>
   </div>
+
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('roster')">👥 동료</button>
     <button class="tab-btn" onclick="switchTab('events')">🎉 이벤트</button>
@@ -172,10 +218,14 @@ input[type=text]:focus { border-color: var(--accent); background: #fff; }
     <div class="bingo-sub">아래 장소를 지나가면 자동으로 체크돼요!</div>
   </div>
 </div>
+
 <div id="toast"></div>
+
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, set, onValue, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ── Firebase 자동 연결 ──
 const firebaseConfig = {
   apiKey: "AIzaSyDl99DugGV66URyGekyMvGNLr8LIrffW8I",
   authDomain: "event-gangjji.firebaseapp.com",
@@ -185,250 +235,537 @@ const firebaseConfig = {
   messagingSenderId: "1096509686777",
   appId: "1:1096509686777:web:1f0444ed325ea7c99d3328"
 };
-let db=null, demoMode=false;
-try { const app=initializeApp(firebaseConfig); db=getDatabase(app); }
-catch(e) { console.warn('Firebase 실패:', e); demoMode=true; }
-const PASTELS=[
-  {hex:'#FFB3B3',name:'로즈'},{hex:'#FFD1A9',name:'피치'},{hex:'#FFF0A0',name:'레몬'},
-  {hex:'#B8F0C8',name:'민트'},{hex:'#A9D4FF',name:'스카이'},{hex:'#C9B8FF',name:'라벤더'},
-  {hex:'#FFB8E8',name:'핑크'},{hex:'#A8EDE8',name:'아쿠아'},{hex:'#FFCBB8',name:'살구'},{hex:'#D8C8FF',name:'퍼플'},
+let db = null;
+let demoMode = false;
+try {
+  const app = initializeApp(firebaseConfig);
+  db = getDatabase(app);
+} catch(e) {
+  console.warn('Firebase 실패, 데모 모드:', e);
+  demoMode = true;
+}
+
+// ── 상수 ──
+const PASTELS = [
+  { hex:'#FFB3B3', name:'로즈' }, { hex:'#FFD1A9', name:'피치' },
+  { hex:'#FFF0A0', name:'레몬' }, { hex:'#B8F0C8', name:'민트' },
+  { hex:'#A9D4FF', name:'스카이' }, { hex:'#C9B8FF', name:'라벤더' },
+  { hex:'#FFB8E8', name:'핑크' }, { hex:'#A8EDE8', name:'아쿠아' },
+  { hex:'#FFCBB8', name:'살구' }, { hex:'#D8C8FF', name:'퍼플' },
 ];
-const OFFICE={lat:37.5412063,lng:126.9695419,name:'서울광역청년센터'};
-const BINGO_SPOTS=[
-  {name:'잇케',lat:37.5401150,lng:126.9676741,emoji:'🎂'},
-  {name:'베이커리무이',lat:37.5396354,lng:126.9668649,emoji:'🥐'},
-  {name:'헤븐스브래드',lat:37.5253467,lng:126.9628472,emoji:'🍞'},
-  {name:'까치네',lat:37.5443320,lng:126.9732218,emoji:'🍳'},
-  {name:'다이소(남영)',lat:37.5421488,lng:126.9718875,emoji:'🛒'},
+
+// 실제 좌표 기반 장소
+const OFFICE = { lat: 37.5412063, lng: 126.9695419, name: '서울광역청년센터' };
+const BINGO_SPOTS = [
+  { name: '잇케',       lat: 37.5401150, lng: 126.9676741, emoji: '🎂' },
+  { name: '베이커리무이', lat: 37.5396354, lng: 126.9668649, emoji: '🥐' },
+  { name: '헤븐스브래드', lat: 37.5253467, lng: 126.9628472, emoji: '🍞' },
+  { name: '까치네',     lat: 37.5443320, lng: 126.9732218, emoji: '🍳' },
+  { name: '다이소(남영)', lat: 37.5421488, lng: 126.9718875, emoji: '🛒' },
 ];
-const BINGO_RADIUS_M=80;
-let myId='u_'+Math.random().toString(36).slice(2,8), myName='', myColor=PASTELS[0].hex, mySteps=0;
-let roomCode='', players={}, bingoHits=new Array(5).fill(false);
-let firstArrivalClaimed=false, crossedWith=new Set(), toastTimer=null;
-let gMap=null, myMarker=null, playerMarkers={}, lastLatLng=null;
-(function(){
-  const grid=document.getElementById('colorGrid');
-  PASTELS.forEach((c,i)=>{
-    const sw=document.createElement('div');
-    sw.className='color-swatch'+(i===0?' selected':'');
-    sw.style.background=c.hex; sw.title=c.name;
-    sw.onclick=()=>{ document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('selected')); sw.classList.add('selected'); myColor=c.hex; };
+// 지도 범위: 효창공원역(37.5393,126.9522) ~ 남영역(37.5416,126.9726) ~ 숙대입구(37.5443,126.9640)
+const BINGO_RADIUS_M = 80; // 80m 이내 진입시 체크
+
+// ── 상태 ──
+let myId = 'u_' + Math.random().toString(36).slice(2,8);
+let myName = '', myColor = PASTELS[0].hex, mySteps = 0;
+let roomCode = '';
+let players = {};
+let bingoHits = new Array(5).fill(false);
+let firstArrivalClaimed = false;
+let crossedWith = new Set();
+let toastTimer = null;
+let gMap = null;
+let myMarker = null;
+let playerMarkers = {};
+let polylines = {};
+let bingoCircles = [];
+let watchId = null;
+
+// ── 색상 picker ──
+function initColorPicker() {
+  const grid = document.getElementById('colorGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  PASTELS.forEach((c,i) => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch' + (i===0?' selected':'');
+    sw.style.background = c.hex;
+    sw.title = c.name;
+    sw.onclick = () => {
+      document.querySelectorAll('.color-swatch').forEach(x=>x.classList.remove('selected'));
+      sw.classList.add('selected');
+      myColor = c.hex;
+    };
     grid.appendChild(sw);
   });
-})();
-window.goStep2=function(){
-  const n=document.getElementById('nameInput').value.trim();
-  if(!n){showToast('이름을 입력해주세요 😊');return;}
-  myName=n;
-  document.getElementById('step1').style.display='none';
-  document.getElementById('step2').style.display='block';
+}
+window.addEventListener('load', initColorPicker);
+// ── Lobby ──
+window.goStep2 = function() {
+  const n = document.getElementById('nameInput').value.trim();
+  if (!n) { showToast('이름을 입력해주세요 😊'); return; }
+  myName = n;
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
   document.getElementById('sd1').classList.replace('active','done');
   document.getElementById('sd2').classList.add('active');
 };
-window.requestLocation=function(){
-  if(!navigator.geolocation){useDemoPos();return;}
+
+window.requestLocation = function() {
+  if (!navigator.geolocation) { useDemoPos(); return; }
   showToast('위치 확인 중...');
-  navigator.geolocation.getCurrentPosition(()=>goStep3(),()=>{showToast('위치 권한 거부 → 데모 위치 사용');useDemoPos();});
+  navigator.geolocation.getCurrentPosition(
+    () => goStep3(),
+    () => { showToast('위치 권한 거부 → 데모 위치 사용'); useDemoPos(); }
+  );
 };
-window.useDemoPos=function(){goStep3();};
-function goStep3(){
-  const params=new URLSearchParams(window.location.search);
-  roomCode=params.get('room')||Math.random().toString(36).slice(2,7).toUpperCase();
-  document.getElementById('step2').style.display='none';
-  document.getElementById('step3').style.display='block';
+
+window.useDemoPos = function() { goStep3(); };
+
+function goStep3() {
+  const params = new URLSearchParams(window.location.search);
+  roomCode = params.get('room') || Math.random().toString(36).slice(2,7).toUpperCase();
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step3').style.display = 'block';
   document.getElementById('sd2').classList.replace('active','done');
   document.getElementById('sd3').classList.add('active');
-  document.getElementById('roomCodeDisplay').textContent=roomCode;
-  document.getElementById('roomLinkDisplay').textContent=`${location.origin}${location.pathname}?room=${roomCode}`;
+  document.getElementById('roomCodeDisplay').textContent = roomCode;
+  const link = `${location.origin}${location.pathname}?room=${roomCode}`;
+  document.getElementById('roomLinkDisplay').textContent = link;
 }
-window.copyLink=function(){
-  const link=document.getElementById('roomLinkDisplay').textContent;
-  if(navigator.clipboard)navigator.clipboard.writeText(link);
+
+window.copyLink = function() {
+  const link = document.getElementById('roomLinkDisplay').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(link);
   showToast('📋 링크 복사 완료!');
 };
-window.enterMap=function(){
+
+window.enterMap = function() {
   document.getElementById('lobby').classList.remove('active');
   document.getElementById('mapscreen').classList.add('active');
   initMap();
 };
-function initMap(){
-  document.getElementById('myDot').style.background=myColor;
-  document.getElementById('myNameBadge').textContent=myName;
-  gMap=new google.maps.Map(document.getElementById('map'),{
-    center:{lat:OFFICE.lat,lng:OFFICE.lng},zoom:16,disableDefaultUI:true,zoomControl:true,
-    styles:[
-      {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
-      {featureType:'transit',elementType:'labels',stylers:[{visibility:'off'}]},
-      {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]},
-      {featureType:'landscape',stylers:[{color:'#EDF4E8'}]},
-      {featureType:'water',stylers:[{color:'#C8E8F8'}]},
+
+// ── Google Map 초기화 ──
+function initMap() {
+  document.getElementById('myDot').style.background = myColor;
+  document.getElementById('myNameBadge').textContent = myName;
+
+  gMap = new google.maps.Map(document.getElementById('map'), {
+    center: { lat: 37.5370, lng: 126.9650 },  // 효창~남영~숙대 중심
+    zoom: 15,
+    disableDefaultUI: true,
+    zoomControl: true,
+    restriction: {
+      latLngBounds: { north: 37.552, south: 37.522, east: 126.980, west: 126.948 },
+      strictBounds: false,
+    },
+    styles: [
+      { featureType:'poi', elementType:'labels', stylers:[{visibility:'off'}] },
+      { featureType:'transit', elementType:'labels', stylers:[{visibility:'off'}] },
+      { featureType:'road', elementType:'geometry', stylers:[{color:'#ffffff'}] },
+      { featureType:'landscape', stylers:[{color:'#EDF4E8'}] },
+      { featureType:'water', stylers:[{color:'#C8E8F8'}] },
+      { featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#fafafa'}] },
     ]
   });
+
+  // 회사 마커
   new google.maps.Marker({
-    position:{lat:OFFICE.lat,lng:OFFICE.lng},map:gMap,title:OFFICE.name,
-    icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="44" height="54" viewBox="0 0 44 54"><ellipse cx="22" cy="50" rx="8" ry="4" fill="rgba(0,0,0,0.15)"/><path d="M22 2 C11 2 3 10 3 20 C3 34 22 50 22 50 C22 50 41 34 41 20 C41 10 33 2 22 2Z" fill="#FF8FA3" stroke="white" stroke-width="2"/><text x="22" y="26" text-anchor="middle" font-size="18">🏢</text></svg>'),anchor:new google.maps.Point(22,50)}
+    position: { lat: OFFICE.lat, lng: OFFICE.lng },
+    map: gMap,
+    title: OFFICE.name,
+    icon: {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="54" viewBox="0 0 44 54">
+          <ellipse cx="22" cy="50" rx="8" ry="4" fill="rgba(0,0,0,0.15)"/>
+          <path d="M22 2 C11 2 3 10 3 20 C3 34 22 50 22 50 C22 50 41 34 41 20 C41 10 33 2 22 2Z" fill="#FF8FA3" stroke="white" stroke-width="2"/>
+          <text x="22" y="26" text-anchor="middle" font-size="18">🏢</text>
+        </svg>`),
+      anchor: new google.maps.Point(22, 50),
+    }
   });
-  BINGO_SPOTS.forEach(spot=>{
-    const mk=new google.maps.Marker({
-      position:{lat:spot.lat,lng:spot.lng},map:gMap,title:spot.name,
-      icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="38" height="48" viewBox="0 0 38 48"><ellipse cx="19" cy="44" rx="6" ry="3" fill="rgba(0,0,0,0.12)"/><path d="M19 2 C10 2 3 9 3 17 C3 29 19 44 19 44 C19 44 35 29 35 17 C35 9 28 2 19 2Z" fill="#FFF0A0" stroke="#E8C800" stroke-width="1.5"/><text x="19" y="22" text-anchor="middle" font-size="14">${spot.emoji}</text></svg>`),anchor:new google.maps.Point(19,44)}
+
+  // 빙고 장소 마커
+  BINGO_SPOTS.forEach((spot, i) => {
+    const marker = new google.maps.Marker({
+      position: { lat: spot.lat, lng: spot.lng },
+      map: gMap,
+      title: spot.name,
+      icon: {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+          <svg xmlns="http://www.w3.org/2000/svg" width="38" height="48" viewBox="0 0 38 48">
+            <ellipse cx="19" cy="44" rx="6" ry="3" fill="rgba(0,0,0,0.12)"/>
+            <path d="M19 2 C10 2 3 9 3 17 C3 29 19 44 19 44 C19 44 35 29 35 17 C35 9 28 2 19 2Z" fill="#FFF0A0" stroke="#E8C800" stroke-width="1.5"/>
+            <text x="19" y="22" text-anchor="middle" font-size="14">${spot.emoji}</text>
+          </svg>`),
+        anchor: new google.maps.Point(19, 44),
+      }
     });
-    new google.maps.Circle({center:{lat:spot.lat,lng:spot.lng},radius:BINGO_RADIUS_M,map:gMap,fillColor:'#FFF0A0',fillOpacity:0.25,strokeColor:'#E8C800',strokeOpacity:0.6,strokeWeight:1.5});
-    new google.maps.InfoWindow({content:`<div style="font-family:'Noto Sans KR';font-size:11px;font-weight:700;padding:2px 4px;">${spot.emoji} ${spot.name}</div>`,disableAutoPan:true}).open(gMap,mk);
+    // 반경 원
+    new google.maps.Circle({
+      center: { lat: spot.lat, lng: spot.lng },
+      radius: BINGO_RADIUS_M,
+      map: gMap,
+      fillColor: '#FFF0A0',
+      fillOpacity: 0.25,
+      strokeColor: '#E8C800',
+      strokeOpacity: 0.6,
+      strokeWeight: 1.5,
+    });
+    // 라벨
+    new google.maps.InfoWindow({
+      content: `<div style="font-family:'Noto Sans KR';font-size:11px;font-weight:700;color:#2D2A26;padding:2px 4px;">${spot.emoji} ${spot.name}</div>`,
+      disableAutoPan: true,
+    }).open(gMap, marker);
   });
-  initBingo(); initFirebaseSync(); startLocationWatch();
-  setInterval(updateHudTime,1000); updateHudTime();
-  if(demoMode)spawnDemoPlayers();
+
+  initBingo();
+  initFirebaseSync();
+  startLocationWatch();
+  setInterval(updateHudTime, 1000);
+  updateHudTime();
+
+  if (demoMode) spawnDemoPlayers();
 }
-function startLocationWatch(){
-  if(!navigator.geolocation){useDemoMovement();return;}
-  navigator.geolocation.watchPosition(
-    pos=>updateMyPosition(pos.coords.latitude,pos.coords.longitude),
-    ()=>useDemoMovement(),
-    {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
+
+// ── 내 위치 추적 (GPS) ──
+function startLocationWatch() {
+  if (!navigator.geolocation) { useDemoMovement(); return; }
+  watchId = navigator.geolocation.watchPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      updateMyPosition(lat, lng);
+    },
+    err => {
+      console.warn('GPS 오류:', err);
+      useDemoMovement();
+    },
+    { enableHighAccuracy: true, maximumAge: 3000, timeout: 10000 }
   );
 }
-function useDemoMovement(){
-  let lat=OFFICE.lat+(Math.random()-0.5)*0.012,lng=OFFICE.lng+(Math.random()-0.5)*0.012;
-  const iv=setInterval(()=>{
-    const p=players[myId]; if(p&&p.arrived){clearInterval(iv);return;}
-    const dlat=OFFICE.lat-lat,dlng=OFFICE.lng-lng,dist=Math.sqrt(dlat*dlat+dlng*dlng);
-    if(dist<0.0001)return;
-    lat+=dlat*0.04+(Math.random()-0.5)*0.00005;
-    lng+=dlng*0.04+(Math.random()-0.5)*0.00005;
-    updateMyPosition(lat,lng);
-  },1500);
+
+function useDemoMovement() {
+  // GPS 없을 때: 회사 근처 임의 위치에서 시작해서 천천히 이동
+  let lat = OFFICE.lat + (Math.random()-0.5)*0.012;
+  let lng = OFFICE.lng + (Math.random()-0.5)*0.012;
+  const interval = setInterval(() => {
+    const p = players[myId];
+    if (p && p.arrived) { clearInterval(interval); return; }
+    const dlat = (OFFICE.lat - lat);
+    const dlng = (OFFICE.lng - lng);
+    const dist = Math.sqrt(dlat*dlat + dlng*dlng);
+    if (dist < 0.0001) return;
+    lat += dlat * 0.04 + (Math.random()-0.5)*0.00005;
+    lng += dlng * 0.04 + (Math.random()-0.5)*0.00005;
+    updateMyPosition(lat, lng);
+  }, 1500);
 }
-function updateMyPosition(lat,lng){
-  const latlng=new google.maps.LatLng(lat,lng);
-  if(lastLatLng)drawFootprintBetween(lastLatLng,latlng,myColor);
-  lastLatLng=latlng;
-  if(!myMarker){
-    myMarker=createPlayerMarker(myId,lat,lng,myName,myColor,true);
-    players[myId]={id:myId,name:myName,color:myColor,lat,lng,steps:0,arrived:false};
+
+let lastLatLng = null;
+function updateMyPosition(lat, lng) {
+  const latlng = new google.maps.LatLng(lat, lng);
+
+  // 발자국 그리기
+  if (lastLatLng) {
+    drawFootprintBetween(lastLatLng, latlng, myColor, myId);
+  }
+  lastLatLng = latlng;
+
+  // 내 마커 이동
+  if (!myMarker) {
+    myMarker = createPlayerMarker(myId, lat, lng, myName, myColor, true);
+    players[myId] = { id: myId, name: myName, color: myColor, lat, lng, steps: 0, arrived: false };
   } else {
     myMarker.setPosition(latlng);
-    players[myId].lat=lat; players[myId].lng=lng;
+    players[myId].lat = lat;
+    players[myId].lng = lng;
   }
-  mySteps++; players[myId].steps=mySteps;
-  document.getElementById('stepCount').textContent=mySteps*7;
-  const distToOffice=haversineM(lat,lng,OFFICE.lat,OFFICE.lng);
-  if(distToOffice<60&&!players[myId].arrived){
-    players[myId].arrived=true;
-    if(!firstArrivalClaimed){firstArrivalClaimed=true;addEvent('first',`${myName}님이 오늘의 첫 발자국 챔피언! 👑`,'first');showToast('🏆 오늘의 새벽닭!');}
-    else{addEvent('arrive',`${myName}님 도착! 🏢`,'arrive');showToast('🏢 출근 완료!');}
+
+  mySteps++;
+  players[myId].steps = mySteps;
+  document.getElementById('stepCount').textContent = mySteps * 7;
+
+  // 회사 도착 체크 (반경 50m)
+  const distToOffice = google.maps.geometry
+    ? google.maps.geometry.spherical.computeDistanceBetween(latlng, new google.maps.LatLng(OFFICE.lat, OFFICE.lng))
+    : haversineM(lat, lng, OFFICE.lat, OFFICE.lng);
+
+  if (distToOffice < 60 && !players[myId].arrived) {
+    players[myId].arrived = true;
+    if (!firstArrivalClaimed) {
+      firstArrivalClaimed = true;
+      addEvent('first', `${myName}님이 오늘의 첫 발자국 챔피언! 👑`, 'first');
+      showToast('🏆 오늘의 새벽닭! 첫 번째 출근이에요!');
+    } else {
+      addEvent('arrive', `${myName}님 도착! 🏢`, 'arrive');
+      showToast('🏢 출근 완료!');
+    }
   }
-  BINGO_SPOTS.forEach((spot,i)=>{
-    if(bingoHits[i])return;
-    if(haversineM(lat,lng,spot.lat,spot.lng)<BINGO_RADIUS_M){
-      bingoHits[i]=true; updateBingo();
-      addEvent('bingo',`빙고! ${spot.emoji} ${spot.name} 통과!`,'bingo');
+
+  // 빙고 체크
+  BINGO_SPOTS.forEach((spot, i) => {
+    if (bingoHits[i]) return;
+    const d = haversineM(lat, lng, spot.lat, spot.lng);
+    if (d < BINGO_RADIUS_M) {
+      bingoHits[i] = true;
+      updateBingo();
+      addEvent('bingo', `빙고! ${spot.emoji} ${spot.name} 통과!`, 'bingo');
       showToast(`🎯 ${spot.name} 체크!`);
     }
   });
-  Object.values(players).forEach(p=>{
-    if(p.id===myId||!p.lat)return;
-    if(haversineM(lat,lng,p.lat,p.lng)<50&&!crossedWith.has(p.id)){
+
+  // 동선 교차 체크
+  Object.values(players).forEach(p => {
+    if (p.id === myId || !p.lat) return;
+    const d = haversineM(lat, lng, p.lat, p.lng);
+    if (d < 50 && !crossedWith.has(p.id)) {
       crossedWith.add(p.id);
-      addEvent('cross',`${myName}님과 ${p.name}님 동선 교차! ☕`,'cross');
+      addEvent('cross', `${myName}님과 ${p.name}님 동선 교차! ☕ 커피 한 잔?`, 'cross');
       showToast(`☕ ${p.name}님과 스쳐 지나갔어요!`);
-      setTimeout(()=>crossedWith.delete(p.id),30000);
+      setTimeout(() => crossedWith.delete(p.id), 30000);
     }
   });
-  if(db&&!demoMode)set(ref(db,`rooms/${roomCode}/players/${myId}`),{name:myName,color:myColor,lat,lng,steps:mySteps,arrived:players[myId].arrived});
+
+  // Firebase 동기화
+  if (db && !demoMode) {
+    set(ref(db, `rooms/${roomCode}/players/${myId}`), {
+      name: myName, color: myColor, lat, lng,
+      steps: mySteps, arrived: players[myId].arrived
+    });
+  }
+
   updateRoster();
 }
-function initFirebaseSync(){
-  if(!db||demoMode)return;
-  onDisconnect(ref(db,`rooms/${roomCode}/players/${myId}`)).remove();
-  onValue(ref(db,`rooms/${roomCode}/players`),snapshot=>{
-    const data=snapshot.val()||{};
-    Object.entries(data).forEach(([id,p])=>{
-      if(id===myId)return;
-      const prev=players[id];
-      if(!prev){
-        players[id]={...p,id}; playerMarkers[id]=createPlayerMarker(id,p.lat,p.lng,p.name,p.color,false);
-        addEvent('join',`${p.name}님이 참여했어요!`); showToast(`🐾 ${p.name}님이 출근 시작!`);
-      } else if(p.lat!==prev.lat||p.lng!==prev.lng){
-        if(prev.lat)drawFootprintBetween(new google.maps.LatLng(prev.lat,prev.lng),new google.maps.LatLng(p.lat,p.lng),p.color);
-        players[id]={...players[id],...p};
-        if(playerMarkers[id])playerMarkers[id].setPosition(new google.maps.LatLng(p.lat,p.lng));
-        if(!prev.arrived&&p.arrived)addEvent('arrive',`${p.name}님 도착! 🏢`,'arrive');
+
+// ── Firebase 실시간 동기화 ──
+function initFirebaseSync() {
+  if (!db || demoMode) return;
+  // 내 presence 등록
+  const myRef = ref(db, `rooms/${roomCode}/players/${myId}`);
+  onDisconnect(myRef).remove();
+
+  // 다른 사람 구독
+  onValue(ref(db, `rooms/${roomCode}/players`), snapshot => {
+    const data = snapshot.val() || {};
+    Object.entries(data).forEach(([id, p]) => {
+      if (id === myId) return;
+      const prev = players[id];
+      if (!prev) {
+        // 새 참가자
+        players[id] = { ...p, id, prevLat: p.lat, prevLng: p.lng };
+        playerMarkers[id] = createPlayerMarker(id, p.lat, p.lng, p.name, p.color, false);
+        addEvent('join', `${p.name}님이 참여했어요!`);
+        showToast(`🐾 ${p.name}님이 출근 시작!`);
+      } else {
+        // 위치 업데이트
+        if (p.lat !== prev.lat || p.lng !== prev.lng) {
+          if (prev.lat) {
+            drawFootprintBetween(
+              new google.maps.LatLng(prev.lat, prev.lng),
+              new google.maps.LatLng(p.lat, p.lng),
+              p.color, id
+            );
+          }
+          players[id] = { ...players[id], ...p };
+          if (playerMarkers[id]) {
+            playerMarkers[id].setPosition(new google.maps.LatLng(p.lat, p.lng));
+          }
+          if (!prev.arrived && p.arrived) {
+            addEvent('arrive', `${p.name}님 도착! 🏢`, 'arrive');
+          }
+        }
       }
     });
-    Object.keys(players).forEach(id=>{if(id!==myId&&!data[id]){if(playerMarkers[id])playerMarkers[id].setMap(null);delete players[id];delete playerMarkers[id];}});
+    // 나간 사람 정리
+    Object.keys(players).forEach(id => {
+      if (id !== myId && !data[id]) {
+        if (playerMarkers[id]) playerMarkers[id].setMap(null);
+        delete players[id];
+        delete playerMarkers[id];
+      }
+    });
     updateRoster();
-    document.getElementById('hudOnline').innerHTML=`접속 <strong>${Object.keys(players).length}</strong>명`;
+    document.getElementById('hudOnline').innerHTML = `접속 <strong>${Object.keys(players).length}</strong>명`;
   });
 }
-function drawFootprintBetween(from,to,color){
-  if(!gMap)return;
-  for(let i=0;i<3;i++){
-    const t=(i+0.5)/3;
-    const lat=from.lat()+(to.lat()-from.lat())*t,lng=from.lng()+(to.lng()-from.lng())*t;
-    const dlat=to.lat()-from.lat(),dlng=to.lng()-from.lng(),norm=Math.sqrt(dlat*dlat+dlng*dlng)||1;
-    const side=(i%2===0?1:-1)*0.00003;
-    new google.maps.Circle({center:{lat:lat+dlng/norm*side,lng:lng-dlat/norm*side},radius:2.5,map:gMap,fillColor:color,fillOpacity:0.7,strokeColor:color,strokeOpacity:0.3,strokeWeight:1,clickable:false});
+
+// ── 발자국 그리기 ──
+function drawFootprintBetween(from, to, color, pid) {
+  if (!gMap) return;
+  // 실제 발걸음처럼 좌우로 살짝 엇갈린 타원 여러 개
+  const steps = 3;
+  for (let i = 0; i < steps; i++) {
+    const t = (i + 0.5) / steps;
+    const lat = from.lat() + (to.lat() - from.lat()) * t;
+    const lng = from.lng() + (to.lng() - from.lng()) * t;
+
+    // 발 방향 (진행 방향의 수직)
+    const dlat = to.lat() - from.lat();
+    const dlng = to.lng() - from.lng();
+    const norm = Math.sqrt(dlat*dlat + dlng*dlng) || 1;
+    const side = (i % 2 === 0 ? 1 : -1) * 0.00003;
+    const footLat = lat + dlng/norm * side;
+    const footLng = lng - dlat/norm * side;
+
+    const circle = new google.maps.Circle({
+      center: { lat: footLat, lng: footLng },
+      radius: 2.5,
+      map: gMap,
+      fillColor: color,
+      fillOpacity: 0.7,
+      strokeColor: color,
+      strokeOpacity: 0.3,
+      strokeWeight: 1,
+      clickable: false,
+    });
   }
 }
-function createPlayerMarker(id,lat,lng,name,color,isMe){
-  const emoji=isMe?'🧑':'👤';
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="52" height="62" viewBox="0 0 52 62"><ellipse cx="26" cy="58" rx="10" ry="4" fill="rgba(0,0,0,0.12)"/><circle cx="26" cy="22" r="20" fill="${color}" stroke="white" stroke-width="2.5"/><text x="26" y="28" text-anchor="middle" font-size="18">${emoji}</text><rect x="6" y="40" width="40" height="16" rx="8" fill="${color}" opacity="0.95"/><text x="26" y="52" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.6)" font-family="Noto Sans KR" font-weight="700">${name}</text></svg>`;
-  return new google.maps.Marker({position:{lat,lng},map:gMap,icon:{url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg),anchor:new google.maps.Point(26,58)},title:name,zIndex:isMe?999:100});
+
+// ── 플레이어 마커 생성 ──
+function createPlayerMarker(id, lat, lng, name, color, isMe) {
+  const emoji = isMe ? '🧑' : '👤';
+  const svgStr = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="52" height="62" viewBox="0 0 52 62">
+      <ellipse cx="26" cy="58" rx="10" ry="4" fill="rgba(0,0,0,0.12)"/>
+      <circle cx="26" cy="22" r="20" fill="${color}" stroke="white" stroke-width="2.5"/>
+      <text x="26" y="28" text-anchor="middle" font-size="18">${emoji}</text>
+      <rect x="6" y="40" width="40" height="16" rx="8" fill="${color}" opacity="0.95"/>
+      <text x="26" y="52" text-anchor="middle" font-size="9" fill="rgba(0,0,0,0.6)" font-family="Noto Sans KR" font-weight="700">${name}</text>
+    </svg>`;
+  return new google.maps.Marker({
+    position: { lat, lng },
+    map: gMap,
+    icon: {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgStr),
+      anchor: new google.maps.Point(26, 58),
+    },
+    title: name,
+    zIndex: isMe ? 999 : 100,
+  });
 }
-function spawnDemoPlayers(){
-  [{name:'지수',color:'#A9D4FF'},{name:'민준',color:'#B8F0C8'},{name:'하은',color:'#FFD1A9'}].forEach((d,i)=>{
-    const id='demo_'+i;
-    let lat=OFFICE.lat+(Math.random()-0.5)*0.015,lng=OFFICE.lng+(Math.random()-0.5)*0.015;
-    players[id]={id,name:d.name,color:d.color,lat,lng,steps:0,arrived:false};
-    playerMarkers[id]=createPlayerMarker(id,lat,lng,d.name,d.color,false);
-    addEvent('join',`${d.name}님이 출근 시작!`);
-    let prevLL=new google.maps.LatLng(lat,lng);
-    const iv=setInterval(()=>{
-      if(players[id]?.arrived){clearInterval(iv);return;}
-      const dlat=OFFICE.lat-lat,dlng=OFFICE.lng-lng,dist=Math.sqrt(dlat*dlat+dlng*dlng);
-      if(dist<0.0003){players[id].arrived=true;addEvent('arrive',`${d.name}님 도착! 🏢`,'arrive');clearInterval(iv);return;}
-      lat+=dlat*0.05+(Math.random()-0.5)*0.0002;lng+=dlng*0.05+(Math.random()-0.5)*0.0002;
-      const newLL=new google.maps.LatLng(lat,lng);
-      drawFootprintBetween(prevLL,newLL,d.color);prevLL=newLL;
-      players[id].lat=lat;players[id].lng=lng;
-      if(playerMarkers[id])playerMarkers[id].setPosition(newLL);
-      players[id].steps++;updateRoster();
-    },1200+i*300);
+
+// ── 데모 플레이어 ──
+function spawnDemoPlayers() {
+  const demos = [
+    { name:'지수', color:'#A9D4FF' },
+    { name:'민준', color:'#B8F0C8' },
+    { name:'하은', color:'#FFD1A9' },
+  ];
+  demos.forEach((d, i) => {
+    const id = 'demo_' + i;
+    let lat = OFFICE.lat + (Math.random()-0.5)*0.015;
+    let lng = OFFICE.lng + (Math.random()-0.5)*0.015;
+    players[id] = { id, name: d.name, color: d.color, lat, lng, steps: 0, arrived: false };
+    playerMarkers[id] = createPlayerMarker(id, lat, lng, d.name, d.color, false);
+    addEvent('join', `${d.name}님이 출근 시작!`);
+
+    let prevLL = new google.maps.LatLng(lat, lng);
+    const iv = setInterval(() => {
+      if (players[id]?.arrived) { clearInterval(iv); return; }
+      const dlat = OFFICE.lat - lat, dlng = OFFICE.lng - lng;
+      const dist = Math.sqrt(dlat*dlat+dlng*dlng);
+      if (dist < 0.0003) {
+        players[id].arrived = true;
+        addEvent('arrive', `${d.name}님 도착! 🏢`, 'arrive');
+        clearInterval(iv); return;
+      }
+      lat += dlat*0.05 + (Math.random()-0.5)*0.0002;
+      lng += dlng*0.05 + (Math.random()-0.5)*0.0002;
+      const newLL = new google.maps.LatLng(lat, lng);
+      drawFootprintBetween(prevLL, newLL, d.color, id);
+      prevLL = newLL;
+      players[id].lat = lat; players[id].lng = lng;
+      if (playerMarkers[id]) playerMarkers[id].setPosition(newLL);
+      players[id].steps++;
+      updateRoster();
+    }, 1200 + i*300);
   });
   updateRoster();
 }
-function initBingo(){updateBingo();}
-function updateBingo(){
-  const grid=document.getElementById('bingoGrid');grid.innerHTML='';
-  BINGO_SPOTS.forEach((spot,i)=>{
-    const cell=document.createElement('div');
-    cell.className='bingo-cell'+(bingoHits[i]?' hit':'');
-    cell.textContent=spot.emoji+'\n'+spot.name;cell.style.whiteSpace='pre';
+
+// ── 빙고 ──
+function initBingo() { updateBingo(); }
+function updateBingo() {
+  const grid = document.getElementById('bingoGrid');
+  grid.innerHTML = '';
+  BINGO_SPOTS.forEach((spot, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'bingo-cell' + (bingoHits[i]?' hit':'');
+    cell.textContent = spot.emoji + '\n' + spot.name;
+    cell.style.whiteSpace = 'pre';
     grid.appendChild(cell);
   });
 }
-function updateRoster(){
-  const list=document.getElementById('rosterList');list.innerHTML='';
-  Object.values(players).forEach(p=>{
-    const row=document.createElement('div');row.className='roster-row';
-    const dist=p.lat?Math.round(haversineM(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
-    const distText=p.arrived?'✓ 도착':(typeof dist==='number'?`${dist}m 남음`:'-');
-    row.innerHTML=`<div class="roster-avatar" style="background:${p.color}30;">${p.arrived?'😊':'🚶'}</div><div class="roster-info"><div class="roster-name">${p.name}${p.id===myId?' <span style="font-size:0.65rem;color:var(--text3);">(나)</span>':''}</div><div class="roster-sub">발자국 ${(p.steps||0)*7}개</div></div><div class="roster-dist" style="color:${p.arrived?'#3B6D11':'var(--text2)'};">${distText}</div>`;
+
+// ── 동료 목록 ──
+function updateRoster() {
+  const list = document.getElementById('rosterList');
+  list.innerHTML = '';
+  const officeLL = { lat: OFFICE.lat, lng: OFFICE.lng };
+  Object.values(players).forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'roster-row';
+    const dist = p.lat ? Math.round(haversineM(p.lat, p.lng, OFFICE.lat, OFFICE.lng)) : '?';
+    const distText = p.arrived ? '✓ 도착' : (typeof dist==='number' ? `${dist}m 남음` : '-');
+    row.innerHTML = `
+      <div class="roster-avatar" style="background:${p.color}30;">${p.arrived?'😊':'🚶'}</div>
+      <div class="roster-info">
+        <div class="roster-name">${p.name}${p.id===myId?' <span style="font-size:0.65rem;color:var(--text3);">(나)</span>':''}</div>
+        <div class="roster-sub">발자국 ${(p.steps||0)*7}개</div>
+      </div>
+      <div class="roster-dist" style="color:${p.arrived?'#3B6D11':'var(--text2)'};">${distText}</div>`;
     list.appendChild(row);
   });
 }
-function addEvent(type,msg,tag){
-  const feed=document.getElementById('eventFeed'),row=document.createElement('div');
-  row.className='event-row';
-  const now=new Date(),time=`${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
-  const tagMap={first:['챔피언','tag-first'],cross:['교차','tag-cross'],bingo:['빙고','tag-bingo'],arrive:['도착','tag-arrive']};
-  const[tl,tc]=tagMap[tag]||['',''];
-  row.innerHTML=`${tl?`<span class="event-tag ${tc}">${tl}</span>`:''}<span class="event-msg">${msg}</span><span class="event-time">${time}</span>`;
+
+// ── 이벤트 ──
+function addEvent(type, msg, tag) {
+  const feed = document.getElementById('eventFeed');
+  const row = document.createElement('div');
+  row.className = 'event-row';
+  const now = new Date();
+  const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const tagMap = { first:['챔피언','tag-first'], cross:['교차','tag-cross'], bingo:['빙고','tag-bingo'], arrive:['도착','tag-arrive'] };
+  const [tl, tc] = tagMap[tag]||['',''];
+  row.innerHTML = `${tl?`<span class="event-tag ${tc}">${tl}</span>`:''}
+    <span class="event-msg">${msg}</span>
+    <span class="event-time">${time}</span>`;
   feed.prepend(row);
 }
-window.switchTab=function(tab){
+
+// ── 탭 ──
+window.switchTab = function(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['roster','events','bingo'][i]===tab));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
-};​​​​​​​​​​​​​​​​
+};
+
+// ── 유틸 ──
+function haversineM(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function updateHudTime() {
+  const now = new Date();
+  document.getElementById('hudTime').textContent =
+    `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+
+</body>
+</html>
