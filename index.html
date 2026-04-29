@@ -382,6 +382,15 @@ function initMap(){
 
   initBingo();
 
+  // 내 빙고 데이터 Firebase에 등록 (세션 복원 시 기존 데이터 유지)
+  var myBc=hits.filter(Boolean).length;
+  if(myBc>0){
+    fbSet('rooms/'+roomCode+'/bingos/'+myId,{
+      name:myName,color:myColor,count:myBc,
+      hits:hits.map(function(h){return h?1:0;})
+    });
+  }
+
   // 기존 발자국 경로 불러오기
   loadAllTrails(function(){
     startGPS();
@@ -504,13 +513,20 @@ function updatePos(lat,lng){
     else{addEv('arrive',myName+'님 도착! 🏢','arrive');showToast('🏢 출근 완료!');}
   }
 
-  // 빙고 체크
+  // 빙고 체크 — 달성 즉시 Firebase 별도 경로에 저장
   SPOTS.forEach(function(s,i){
     if(hits[i])return;
     if(hav(lat,lng,s.lat,s.lng)<RAD){
       hits[i]=true;
       var bc=hits.filter(Boolean).length;
       players[myId].bingoCount=bc;
+      players[myId].bingoHits=hits.slice();
+      // 즉시 Firebase에 빙고 데이터 저장 (위치 업데이트와 별개로)
+      fbSet('rooms/'+roomCode+'/bingos/'+myId,{
+        name:myName,color:myColor,
+        count:bc,
+        hits:hits.map(function(h){return h?1:0;})
+      });
       updBingo();updRank();
       addEv('bingo','빙고! '+s.emoji+' '+s.name+' 통과!','bingo');
       showToast('🎯 '+s.name+' 체크! ('+bc+'/5)');
@@ -546,7 +562,23 @@ function updatePos(lat,lng){
 function startPolling(){
   if(pollingStarted)return;
   pollingStarted=true;
+
+  // 입장 시 기존 빙고 데이터 즉시 로드
+  fbGet('rooms/'+roomCode+'/bingos').then(function(data){
+    if(!data)return;
+    Object.keys(data).forEach(function(id){
+      if(id===myId)return;
+      var b=data[id];
+      if(!b)return;
+      if(!players[id])players[id]={id:id,name:b.name,color:b.color,steps:0,arrived:false};
+      players[id].bingoCount=b.count||0;
+      players[id].bingoHits=(b.hits||[]).map(function(h){return !!h;});
+    });
+    updRank();
+  });
+
   pollingTimer=setInterval(function(){
+    // 플레이어 위치 폴링
     fbGet('rooms/'+roomCode+'/players').then(function(data){
       if(!data)return;
       Object.keys(data).forEach(function(id){
@@ -573,8 +605,37 @@ function startPolling(){
           delete players[id];delete ovls[id];delete polylines[id];delete polylinePaths[id];
         }
       });
-      updRoster();updRank();
+      updRoster();
       document.getElementById('hudOnline').innerHTML='접속 <strong>'+Object.keys(players).length+'</strong>명';
+    });
+
+    // 빙고 데이터 별도 폴링 (달성 즉시 반영)
+    fbGet('rooms/'+roomCode+'/bingos').then(function(data){
+      if(!data)return;
+      var changed=false;
+      Object.keys(data).forEach(function(id){
+        if(id===myId)return;
+        var b=data[id];if(!b)return;
+        var prev=players[id];
+        var prevCount=prev?(prev.bingoCount||0):0;
+        var newCount=b.count||0;
+        if(!prev){
+          players[id]={id:id,name:b.name,color:b.color,steps:0,arrived:false};
+        }
+        players[id].bingoCount=newCount;
+        players[id].bingoHits=(b.hits||[]).map(function(h){return !!h;});
+        // 새로 달성한 빙고 감지 → 이벤트 피드 추가
+        if(newCount>prevCount){
+          var newHits=(b.hits||[]);
+          SPOTS.forEach(function(s,i){
+            if(newHits[i]&&!(prev&&prev.bingoHits&&prev.bingoHits[i])){
+              addEv('bingo',b.name+'님 빙고! '+s.emoji+' '+s.name+' 통과!','bingo');
+            }
+          });
+          changed=true;
+        }
+      });
+      if(changed)updRank();
     });
   },2000);
 }
@@ -624,9 +685,10 @@ function deletePlayer(id){
   var name=p&&p.name?p.name:'해당 멤버';
   if(!confirm(name+'님을 명단에서 삭제할까요?'))return;
 
-  // Firebase에서 플레이어 + 발자국 경로 삭제
+  // Firebase에서 플레이어 + 발자국 경로 + 빙고 데이터 삭제
   fbDelete('rooms/'+roomCode+'/players/'+id);
   fbDelete('rooms/'+roomCode+'/trails/'+id);
+  fbDelete('rooms/'+roomCode+'/bingos/'+id);
 
   if(id===myId){
     stopAll();clearSession();
@@ -649,29 +711,42 @@ function deletePlayer(id){
 function updRank(){
   var list=document.getElementById('rankList');if(!list)return;
   var sorted=Object.values(players).sort(function(a,b){
+    // 1순위: 빙고 달성 수, 2순위: 발자국 수
     var d=(b.bingoCount||0)-(a.bingoCount||0);
     return d!==0?d:(b.steps||0)-(a.steps||0);
   });
   list.innerHTML='';
-  if(!sorted.length){list.innerHTML='<div style="font-size:.8rem;color:var(--tx3);text-align:center;padding:1rem">아직 참여자가 없어요</div>';return;}
-  var medals=['','🎖️','⭐','✨','🌟','🏆'];
+  if(!sorted.length){
+    list.innerHTML='<div style="font-size:.8rem;color:var(--tx3);text-align:center;padding:1rem">아직 참여자가 없어요</div>';
+    return;
+  }
   sorted.forEach(function(p,i){
     var row=document.createElement('div');row.className='rank-row';
     var rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
     var rl=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'';
     var bc=p.bingoCount||0;
     var bw=Math.round(bc/5*100);
-    var badge=bc>0?(medals[bc]||'🏆'):'';
+    var bh=p.bingoHits||(p.id===myId?hits:[]);
+
+    // 달성한 장소 이모지 표시
+    var spotIcons=SPOTS.map(function(s,si){
+      var done=bh[si];
+      return '<span title="'+s.name+'" style="font-size:.9rem;opacity:'+(done?'1':'.25')+'">'+s.emoji+'</span>';
+    }).join('');
+
     row.innerHTML=
       '<div class="rank-num '+rc+'">'+rl+'</div>'+
       '<div style="width:10px;height:10px;border-radius:50%;background:'+p.color+';flex-shrink:0;border:1.5px solid rgba(0,0,0,.1)"></div>'+
       '<div class="rank-bar-wrap">'+
         '<div class="rank-info">'+
           '<span class="rank-name">'+p.name+(p.id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</span>'+
-          '<span class="rank-score">'+badge+' '+bc+'/5 미션</span>'+
+          '<span class="rank-score">'+bc+'/5 미션</span>'+
         '</div>'+
         '<div class="rank-bar-bg"><div class="rank-bar" style="width:'+bw+'%;background:'+p.color+'"></div></div>'+
-        '<div style="font-size:.65rem;color:var(--tx3);margin-top:2px">발자국 '+(p.steps||0)*7+'개 · '+(p.arrived?'✅ 도착':'출근 중')+'</div>'+
+        '<div style="display:flex;gap:4px;margin-top:4px;align-items:center">'+
+          spotIcons+
+          '<span style="font-size:.65rem;color:var(--tx3);margin-left:4px">· '+(p.arrived?'✅ 도착':'출근 중')+'</span>'+
+        '</div>'+
       '</div>';
     list.appendChild(row);
   });
