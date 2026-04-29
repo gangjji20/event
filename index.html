@@ -34,6 +34,14 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 .rbox{background:var(--sf2);border-radius:10px;padding:1rem 1.2rem;margin:12px 0 16px}
 .rcode{font-family:'Nunito',sans-serif;font-size:2rem;font-weight:800;letter-spacing:6px}
 .rlink{font-size:.72rem;color:#7BA8D4;margin-top:4px;word-break:break-all}
+
+/* 세션 복원 카드 */
+.restore-card{background:linear-gradient(135deg,#FFF5F8,#F0F8FF);border:1.5px solid var(--ac);border-radius:16px;padding:1rem 1.2rem;margin-bottom:1rem;text-align:left}
+.restore-title{font-size:.78rem;font-weight:700;color:var(--ac);margin-bottom:6px}
+.restore-info{font-size:.85rem;font-weight:600;color:var(--tx);margin-bottom:10px}
+.restore-btns{display:flex;gap:8px}
+.restore-btns button{flex:1;padding:9px;border-radius:8px;font-size:.82rem;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;border:none}
+
 #mapscreen{background:var(--bg)}
 .mhdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;background:var(--sf);border-bottom:1px solid var(--bd)}
 .htl{font-family:'Nunito',sans-serif;font-weight:800;font-size:1rem}
@@ -46,15 +54,16 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 .pill{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:20px;padding:5px 12px;font-size:.72rem;color:var(--tx2);font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08);white-space:nowrap}
 .pill strong{color:var(--tx)}
 .tabs{display:flex;margin:0 10px 8px;background:var(--sf2);border-radius:10px;padding:3px}
-.tb{flex:1;padding:6px 2px;border:none;background:transparent;border-radius:8px;font-size:.72rem;font-weight:600;color:var(--tx2);cursor:pointer}
+.tb{flex:1;padding:6px 2px;border:none;background:transparent;border-radius:8px;font-size:.7rem;font-weight:600;color:var(--tx2);cursor:pointer}
 .tb.active{background:var(--sf);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .panel{display:none;margin:0 10px 10px;background:var(--sf);border-radius:16px;padding:1rem 1.1rem}
 .panel.active{display:block}
 .ptl{font-size:.72rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-.rrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.rrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)}
 .rrow:last-child{border:none}
 .ravt{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
-.rinf{flex:1}.rnm{font-size:.85rem;font-weight:600}.rsb{font-size:.72rem;color:var(--tx2)}.rds{font-size:.75rem;font-weight:700}
+.rinf{flex:1;cursor:pointer}.rnm{font-size:.85rem;font-weight:600}.rsb{font-size:.72rem;color:var(--tx2)}.rds{font-size:.75rem;font-weight:700}
+.delBtn{padding:4px 8px;border-radius:8px;border:1px solid #ffcccc;background:#fff5f5;color:#c0392b;font-size:.68rem;font-weight:700;cursor:pointer;flex-shrink:0}
 .elist{max-height:140px;overflow-y:auto}
 .erow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:.8rem}
 .erow:last-child{border:none}
@@ -65,22 +74,16 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 .bcell{aspect-ratio:1;border-radius:8px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.6rem;color:var(--tx2);text-align:center;padding:3px;font-weight:600;transition:all .3s}
 .bcell.hit{background:#B8F0C8;border-color:#7DD898;color:#1A5E2A;transform:scale(1.05)}
 .bsb{font-size:.72rem;color:var(--tx3);margin-top:8px;text-align:center}
-
-/* 랭킹 패널 */
-.rank-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.rank-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
 .rank-row:last-child{border:none}
 .rank-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
-.rank-1{background:#FFD700;color:#7A5F00}
-.rank-2{background:#E0E0E0;color:#555}
-.rank-3{background:#FFB87A;color:#7A4000}
-.rank-n{background:var(--sf2);color:var(--tx3)}
+.r1{background:#FFD700;color:#7A5F00}.r2{background:#E0E0E0;color:#555}.r3{background:#FFB87A;color:#7A4000}.rn{background:var(--sf2);color:var(--tx3)}
 .rank-bar-wrap{flex:1}
 .rank-bar-bg{background:var(--sf2);border-radius:6px;height:8px;overflow:hidden;margin-top:3px}
 .rank-bar{height:8px;border-radius:6px;transition:width .5s}
 .rank-info{display:flex;justify-content:space-between;align-items:center}
 .rank-name{font-size:.82rem;font-weight:600}
 .rank-score{font-size:.78rem;font-weight:700;color:var(--ac)}
-
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--tx);color:#fff;border-radius:20px;padding:10px 20px;font-size:.82rem;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -97,6 +100,19 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
       <div class="dot" id="sd2"></div><div class="ln"></div>
       <div class="dot" id="sd3"></div>
     </div>
+
+    <!-- 세션 복원 배너 (저장된 세션 있을 때만 노출) -->
+    <div id="restoreBanner" style="display:none">
+      <div class="restore-card">
+        <div class="restore-title">🔄 이전 세션이 있어요</div>
+        <div class="restore-info" id="restoreInfo"></div>
+        <div class="restore-btns">
+          <button onclick="restoreSession()" style="background:var(--tx);color:#fff">이어서 하기</button>
+          <button onclick="newSession()" style="background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)">새로 시작</button>
+        </div>
+      </div>
+    </div>
+
     <div id="step1">
       <div class="lbl">내 이름</div>
       <input type="text" id="nameInput" placeholder="이름 입력 (최대 6자)" maxlength="6" autocomplete="off" autocapitalize="off" style="margin-bottom:16px"/>
@@ -128,8 +144,7 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
 <div id="mapscreen" class="screen">
   <div class="mhdr">
     <div style="display:flex;align-items:center;gap:10px">
-      <span style="font-size:1.2rem">🐾</span>
-      <span class="htl">출근길 발자국</span>
+      <span style="font-size:1.2rem">🐾</span><span class="htl">출근길 발자국</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <div class="mbg"><div class="mdot" id="myDot"></div><span id="myNameBadge"></span></div>
@@ -155,7 +170,6 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
   <div id="panel-bingo" class="panel"><div class="ptl">나의 출근 빙고</div><div class="bgrid" id="bingoGrid"></div><div class="bsb">장소를 지나가면 자동으로 체크돼요!</div></div>
   <div id="panel-rank" class="panel"><div class="ptl">미션 달성 랭킹</div><div id="rankList"></div></div>
 </div>
-
 <div id="toast"></div>
 
 <script>
@@ -174,39 +188,62 @@ var SPOTS=[
 ];
 var RAD=80;
 var DB='https://event-gangjji-default-rtdb.firebaseio.com';
+var MAX_TRAIL=300; // 최대 발자국 포인트 수
 
-var savedId=sessionStorage.getItem('fpUserId');
-var myId=savedId||('u_'+Math.random().toString(36).slice(2,8));
-sessionStorage.setItem('fpUserId',myId);
-
-var myName='',myColor=PASTELS[0].hex,mySteps=0;
+// ── 상태 ──
+var myId='',myName='',myColor=PASTELS[0].hex,mySteps=0;
 var roomCode='',players={},hits=[false,false,false,false,false];
 var firstClaim=false,crossed={},toastT=null;
 var kMap=null,myOvl=null,ovls={},lastLL=null;
 var firstLat=null,firstLng=null;
 var gpsStarted=false,pollingStarted=false;
-var watchId=null,demoTimer=null,pollingTimer=null;
+var watchId=null,demoTimer=null,pollingTimer=null,trailSaveTimer=null;
+var polylines={},polylinePaths={};
+var trailSaveCount=0; // 발자국 저장 간격 카운터
 
-// 플레이어별 발자국 polyline 저장
-var polylines={};
-var polylinePaths={};
-
+// ── Firebase REST ──
 function fbUrl(p){return DB+'/'+p.replace(/^\/+/,'')+'.json';}
 function fbGet(p){return fetch(fbUrl(p)).then(function(r){return r.json();}).catch(function(){return null;});}
 function fbSet(p,d){return fetch(fbUrl(p),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).catch(function(){});}
 function fbDelete(p){return fetch(fbUrl(p),{method:'DELETE'}).catch(function(){});}
 
+// ── 세션 저장/복원 ──
+function saveSession(){
+  localStorage.setItem('fp_id',myId);
+  localStorage.setItem('fp_name',myName);
+  localStorage.setItem('fp_color',myColor);
+  localStorage.setItem('fp_room',roomCode);
+  localStorage.setItem('fp_hits',JSON.stringify(hits));
+  localStorage.setItem('fp_steps',mySteps);
+}
+
+function loadSession(){
+  return {
+    id:localStorage.getItem('fp_id'),
+    name:localStorage.getItem('fp_name'),
+    color:localStorage.getItem('fp_color'),
+    room:localStorage.getItem('fp_room'),
+    hits:JSON.parse(localStorage.getItem('fp_hits')||'[false,false,false,false,false]'),
+    steps:parseInt(localStorage.getItem('fp_steps')||'0')
+  };
+}
+
+function clearSession(){
+  ['fp_id','fp_name','fp_color','fp_room','fp_hits','fp_steps'].forEach(function(k){localStorage.removeItem(k);});
+}
+
 // ── 색상 picker ──
-(function(){
+function buildPicker(selectedColor){
   var g=document.getElementById('colorGrid');
   g.innerHTML='';
   PASTELS.forEach(function(c,i){
+    var sel=(c.hex===(selectedColor||myColor));
     var s=document.createElement('button');
     s.type='button';
-    s.className='sw'+(i===0?' sel':'');
+    s.className='sw'+(sel?' sel':'');
     s.style.backgroundColor=c.hex;
     s.setAttribute('aria-label',c.name);
-    s.textContent=i===0?'✓':'';
+    s.textContent=sel?'✓':'';
     s.addEventListener('click',function(e){
       e.preventDefault();
       document.querySelectorAll('.sw').forEach(function(x){x.classList.remove('sel');x.textContent='';});
@@ -215,13 +252,57 @@ function fbDelete(p){return fetch(fbUrl(p),{method:'DELETE'}).catch(function(){}
     });
     g.appendChild(s);
   });
+}
+buildPicker();
+
+// ── 페이지 로드 시 세션 확인 ──
+(function(){
+  var sess=loadSession();
+  var urlRoom=new URLSearchParams(window.location.search).get('room');
+
+  // 저장된 세션이 있고, URL 방 코드가 일치하거나 URL에 방 코드 없을 때
+  if(sess.id&&sess.name&&sess.color&&sess.room&&(urlRoom===sess.room||!urlRoom)){
+    document.getElementById('restoreInfo').textContent=
+      sess.name+'님 · '+sess.room+' 방 · 미션 '+sess.hits.filter(Boolean).length+'/5';
+    document.getElementById('restoreBanner').style.display='block';
+    // URL에 방 코드 있으면 그 방으로
+    if(urlRoom)sess.room=urlRoom;
+  }
 })();
 
-// ── Lobby ──
+function restoreSession(){
+  var sess=loadSession();
+  var urlRoom=new URLSearchParams(window.location.search).get('room');
+  myId=sess.id;
+  myName=sess.name;
+  myColor=sess.color;
+  roomCode=urlRoom||sess.room;
+  hits=sess.hits;
+  mySteps=sess.steps||0;
+  buildPicker(myColor);
+  document.getElementById('restoreBanner').style.display='none';
+
+  // 로비 건너뛰고 바로 지도로
+  document.getElementById('lobby').classList.remove('active');
+  document.getElementById('mapscreen').classList.add('active');
+  if(!window.kakao||!kakao.maps){showToast('카카오맵 로딩 중...');return;}
+  kakao.maps.load(function(){
+    try{initMap();}catch(e){showToast('지도 오류: '+e.message);}
+  });
+}
+
+function newSession(){
+  clearSession();
+  document.getElementById('restoreBanner').style.display='none';
+  myId='u_'+Math.random().toString(36).slice(2,8);
+}
+
+// ── Lobby 단계 ──
 function goStep2(){
   var n=document.getElementById('nameInput').value.trim();
   if(!n){showToast('이름을 입력해주세요 😊');return;}
   myName=n;
+  if(!myId)myId='u_'+Math.random().toString(36).slice(2,8);
   document.getElementById('step1').style.display='none';
   document.getElementById('step2').style.display='block';
   document.getElementById('sd1').className='dot dn';
@@ -230,36 +311,26 @@ function goStep2(){
 
 function requestLocation(){
   var btn=document.getElementById('locBtn');
-  if(!navigator.geolocation){showToast('위치 기능 미지원 → 데모 위치로 시작');useDemoPos();return;}
-  btn.textContent='위치 확인 중...';
-  btn.disabled=true;
+  if(!navigator.geolocation){showToast('위치 미지원 → 데모 위치로 시작');useDemoPos();return;}
+  btn.textContent='위치 확인 중...';btn.disabled=true;
   navigator.geolocation.getCurrentPosition(
     function(pos){
-      firstLat=pos.coords.latitude;
-      firstLng=pos.coords.longitude;
-      showToast('위치 공유 허용됐어요 🐾');
-      goStep3();
+      firstLat=pos.coords.latitude;firstLng=pos.coords.longitude;
+      showToast('위치 공유 허용됐어요 🐾');goStep3();
     },
     function(err){
-      btn.textContent='📍 위치 공유 허용';
-      btn.disabled=false;
-      // iOS에서 권한 거부 시 설정 안내
-      if(err.code===1){
-        showToast('설정 > Safari > 위치 > 허용 후 다시 시도해주세요');
-      } else {
-        showToast('위치를 가져올 수 없어 데모 위치로 시작해요');
-        useDemoPos();
-      }
+      btn.textContent='📍 위치 공유 허용';btn.disabled=false;
+      if(err.code===1){showToast('설정 > Safari > 위치 > 허용 후 다시 시도해주세요');}
+      else{showToast('위치 오류 → 데모 위치로 시작');useDemoPos();}
     },
     {enableHighAccuracy:true,maximumAge:0,timeout:15000}
   );
 }
-
 function useDemoPos(){goStep3();}
 
 function goStep3(){
-  var p=new URLSearchParams(window.location.search);
-  roomCode=p.get('room')||Math.random().toString(36).slice(2,7).toUpperCase();
+  var urlRoom=new URLSearchParams(window.location.search).get('room');
+  roomCode=urlRoom||Math.random().toString(36).slice(2,7).toUpperCase();
   document.getElementById('step2').style.display='none';
   document.getElementById('step3').style.display='block';
   document.getElementById('sd2').className='dot dn';
@@ -277,10 +348,9 @@ function copyLink(){
 function enterMap(){
   document.getElementById('lobby').classList.remove('active');
   document.getElementById('mapscreen').classList.add('active');
-  if(!window.kakao||!kakao.maps){showToast('카카오맵 로딩 중... 잠시 후 다시 시도해주세요');return;}
+  if(!window.kakao||!kakao.maps){showToast('카카오맵 로딩 중...');return;}
   kakao.maps.load(function(){
-    try{initMap();}
-    catch(e){console.error('initMap 오류:',e);showToast('지도 초기화 오류: '+e.message);}
+    try{initMap();}catch(e){showToast('지도 오류: '+e.message);}
   });
 }
 
@@ -288,10 +358,10 @@ function enterMap(){
 function initMap(){
   document.getElementById('myDot').style.background=myColor;
   document.getElementById('myNameBadge').textContent=myName;
+  document.getElementById('stepCount').textContent=mySteps*7;
 
   kMap=new kakao.maps.Map(document.getElementById('map'),{
-    center:new kakao.maps.LatLng(firstLat||37.5370,firstLng||126.9650),
-    level:4
+    center:new kakao.maps.LatLng(firstLat||37.5370,firstLng||126.9650),level:4
   });
   setTimeout(function(){if(kMap)kMap.relayout();},300);
   kMap.setMaxLevel(6);
@@ -301,31 +371,31 @@ function initMap(){
     '<div style="text-align:center;font-size:22px;line-height:1.3">🏢'+
     '<div style="font-size:9px;background:#FF8FA3;color:#fff;border-radius:8px;padding:2px 6px;font-weight:700;white-space:nowrap">'+OFFICE.name+'</div></div>'
   );
-
   // 빙고 장소
   SPOTS.forEach(function(s){
     mkOvl(s.lat,s.lng,
       '<div style="text-align:center;font-size:18px;line-height:1.3">'+s.emoji+
       '<div style="font-size:9px;background:#FFF0A0;color:#7A5F00;border-radius:8px;padding:2px 5px;font-weight:700;border:1px solid #E8C800;white-space:nowrap">'+s.name+'</div></div>'
     );
-    new kakao.maps.Circle({
-      center:new kakao.maps.LatLng(s.lat,s.lng),radius:RAD,
-      strokeWeight:1.5,strokeColor:'#E8C800',strokeOpacity:.7,
-      fillColor:'#FFF0A0',fillOpacity:.25
-    }).setMap(kMap);
+    new kakao.maps.Circle({center:new kakao.maps.LatLng(s.lat,s.lng),radius:RAD,strokeWeight:1.5,strokeColor:'#E8C800',strokeOpacity:.7,fillColor:'#FFF0A0',fillOpacity:.25}).setMap(kMap);
   });
 
   initBingo();
-  startGPS();
-  startPolling();
-  window.addEventListener('beforeunload',function(){stopAll();});
+
+  // 기존 발자국 경로 불러오기
+  loadAllTrails(function(){
+    startGPS();
+    startPolling();
+  });
+
+  saveSession();
+  window.addEventListener('beforeunload',function(){stopAll();saveSession();});
   setInterval(updateTime,1000);updateTime();
 }
 
 function mkOvl(lat,lng,html){
   new kakao.maps.CustomOverlay({position:new kakao.maps.LatLng(lat,lng),content:html,yAnchor:1}).setMap(kMap);
 }
-
 function mkPOvl(lat,lng,name,color,isMe){
   var em=isMe?'🧑':'👤';
   var html='<div style="text-align:center;pointer-events:none">'+
@@ -336,25 +406,47 @@ function mkPOvl(lat,lng,name,color,isMe){
 }
 
 // ── 발자국 Polyline ──
-function addFootprintPoint(id,lat,lng,color){
-  if(!kMap)return;
+function drawPolyline(id,path,color){
+  if(!kMap||path.length<2)return;
+  if(polylines[id])polylines[id].setMap(null);
+  polylines[id]=new kakao.maps.Polyline({
+    path:path,strokeWeight:5,strokeColor:color,strokeOpacity:0.75,strokeStyle:'shortdot'
+  });
+  polylines[id].setMap(kMap);
+}
+
+function addPoint(id,lat,lng,color){
   if(!polylinePaths[id])polylinePaths[id]=[];
   var path=polylinePaths[id];
   path.push(new kakao.maps.LatLng(lat,lng));
+  if(path.length>MAX_TRAIL)path.shift(); // 최대 개수 유지
+  drawPolyline(id,path,color);
+}
 
-  // 기존 polyline 제거 후 재생성 (점이 2개 이상일 때만)
-  if(path.length<2)return;
-  if(polylines[id]){polylines[id].setMap(null);}
+// ── 발자국 경로 Firebase 저장/불러오기 ──
+function saveMyTrail(){
+  var path=polylinePaths[myId];
+  if(!path||path.length<2)return;
+  // LatLng 객체를 일반 객체 배열로 변환
+  var arr=path.map(function(ll){return {a:ll.getLat(),b:ll.getLng()};});
+  // 최근 MAX_TRAIL개만 저장
+  if(arr.length>MAX_TRAIL)arr=arr.slice(arr.length-MAX_TRAIL);
+  fbSet('rooms/'+roomCode+'/trails/'+myId,{color:myColor,pts:arr});
+}
 
-  // 발자국처럼 보이는 두꺼운 점선 polyline
-  polylines[id]=new kakao.maps.Polyline({
-    path:path,
-    strokeWeight:5,
-    strokeColor:color,
-    strokeOpacity:0.75,
-    strokeStyle:'shortdot'  // 점선으로 발자국 느낌
+function loadAllTrails(cb){
+  fbGet('rooms/'+roomCode+'/trails').then(function(data){
+    if(data){
+      Object.keys(data).forEach(function(id){
+        var t=data[id];
+        if(!t||!t.pts||t.pts.length<2)return;
+        var path=t.pts.map(function(p){return new kakao.maps.LatLng(p.a,p.b);});
+        polylinePaths[id]=path;
+        drawPolyline(id,path,t.color||'#FFB3B3');
+      });
+    }
+    if(cb)cb();
   });
-  polylines[id].setMap(kMap);
 }
 
 // ── GPS 추적 ──
@@ -368,7 +460,7 @@ function startGPS(){
     function(){if(!players[myId])demoMove();},
     {enableHighAccuracy:true,maximumAge:3000,timeout:10000}
   );
-  if(!firstLat||!firstLng)demoMove();
+  if(!firstLat&&!firstLng)demoMove();
 }
 
 function demoMove(){
@@ -379,8 +471,7 @@ function demoMove(){
   demoTimer=setInterval(function(){
     var p=players[myId];if(p&&p.arrived)return;
     var dl=OFFICE.lat-lat,dg=OFFICE.lng-lng,d=Math.sqrt(dl*dl+dg*dg);if(d<.0001)return;
-    lat+=dl*.04+(Math.random()-.5)*.00005;
-    lng+=dg*.04+(Math.random()-.5)*.00005;
+    lat+=dl*.04+(Math.random()-.5)*.00005;lng+=dg*.04+(Math.random()-.5)*.00005;
     updatePos(lat,lng);
   },1500);
 }
@@ -389,11 +480,15 @@ function updatePos(lat,lng){
   if(!kMap)return;
 
   // 발자국 추가
-  addFootprintPoint(myId,lat,lng,myColor);
+  addPoint(myId,lat,lng,myColor);
+
+  // 5포인트마다 Firebase에 경로 저장
+  trailSaveCount++;
+  if(trailSaveCount%5===0)saveMyTrail();
 
   if(!myOvl){
     myOvl=mkPOvl(lat,lng,myName,myColor,true);
-    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:mySteps,arrived:false,bingoCount:0};
+    players[myId]={id:myId,name:myName,color:myColor,lat:lat,lng:lng,steps:mySteps,arrived:false,bingoCount:hits.filter(Boolean).length};
   }else{
     myOvl.setPosition(new kakao.maps.LatLng(lat,lng));
     players[myId].lat=lat;players[myId].lng=lng;
@@ -402,27 +497,28 @@ function updatePos(lat,lng){
   mySteps++;players[myId].steps=mySteps;
   document.getElementById('stepCount').textContent=mySteps*7;
 
-  // 도착
+  // 도착 체크
   if(hav(lat,lng,OFFICE.lat,OFFICE.lng)<60&&!players[myId].arrived){
     players[myId].arrived=true;
     if(!firstClaim){firstClaim=true;addEv('first',myName+'님이 오늘의 첫 발자국 챔피언! 👑','first');showToast('🏆 오늘의 새벽닭!');}
     else{addEv('arrive',myName+'님 도착! 🏢','arrive');showToast('🏢 출근 완료!');}
   }
 
-  // 빙고
-  var bc=hits.filter(Boolean).length;
+  // 빙고 체크
   SPOTS.forEach(function(s,i){
     if(hits[i])return;
     if(hav(lat,lng,s.lat,s.lng)<RAD){
-      hits[i]=true;bc++;
+      hits[i]=true;
+      var bc=hits.filter(Boolean).length;
       players[myId].bingoCount=bc;
       updBingo();updRank();
       addEv('bingo','빙고! '+s.emoji+' '+s.name+' 통과!','bingo');
       showToast('🎯 '+s.name+' 체크! ('+bc+'/5)');
+      saveSession();
     }
   });
 
-  // 교차
+  // 교차 체크
   Object.keys(players).forEach(function(id){
     var p=players[id];if(id===myId||!p.lat)return;
     if(hav(lat,lng,p.lat,p.lng)<50&&!crossed[id]){
@@ -433,12 +529,16 @@ function updatePos(lat,lng){
     }
   });
 
-  // Firebase 저장
+  // Firebase 플레이어 데이터 저장
   fbSet('rooms/'+roomCode+'/players/'+myId,{
     id:myId,name:myName,color:myColor,lat:lat,lng:lng,
     steps:mySteps,arrived:players[myId].arrived,
     bingoCount:players[myId].bingoCount||0
   });
+
+  // 세션 주기적 저장 (10 포인트마다)
+  if(trailSaveCount%10===0)saveSession();
+
   updRoster();updRank();
 }
 
@@ -458,13 +558,11 @@ function startPolling(){
           addEv('join',p.name+'님이 참여했어요!',null);
           showToast('🐾 '+p.name+'님이 출근 시작!');
         }else if(p.lat!==prev.lat||p.lng!==prev.lng){
-          // 다른 사람 발자국 그리기
-          addFootprintPoint(id,p.lat,p.lng,p.color);
+          addPoint(id,p.lat,p.lng,p.color);
           players[id]=Object.assign({},players[id],p,{id:id});
           if(ovls[id])ovls[id].setPosition(new kakao.maps.LatLng(p.lat,p.lng));
           if(!prev.arrived&&p.arrived)addEv('arrive',p.name+'님 도착! 🏢','arrive');
         }else{
-          // 빙고 카운트만 업데이트
           players[id]=Object.assign({},players[id],p,{id:id});
         }
       });
@@ -481,77 +579,98 @@ function startPolling(){
   },2000);
 }
 
-// ── 빙고 UI ──
+// ── 빙고 ──
 function initBingo(){updBingo();}
 function updBingo(){
   var g=document.getElementById('bingoGrid');g.innerHTML='';
   SPOTS.forEach(function(s,i){
-    var c=document.createElement('div');
-    c.className='bcell'+(hits[i]?' hit':'');
-    c.innerHTML=s.emoji+'<br>'+s.name;
-    g.appendChild(c);
+    var c=document.createElement('div');c.className='bcell'+(hits[i]?' hit':'');
+    c.innerHTML=s.emoji+'<br>'+s.name;g.appendChild(c);
   });
 }
 
-// ── 동료 목록 ──
+// ── 동료 목록 (삭제 버튼 포함) ──
 function updRoster(){
   var l=document.getElementById('rosterList');l.innerHTML='';
   Object.keys(players).forEach(function(id){
     var p=players[id];
     var row=document.createElement('div');row.className='rrow';
-    row.onclick=function(){focusPlayer(id);};
     var d=p.lat?Math.round(hav(p.lat,p.lng,OFFICE.lat,OFFICE.lng)):'?';
     var dt=p.arrived?'✓ 도착':(typeof d==='number'?d+'m 남음':'-');
+    var rinfo=document.createElement('div');
+    rinfo.className='rinf';
+    rinfo.onclick=function(){focusPlayer(id);};
+    rinfo.innerHTML=
+      '<div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div>'+
+      '<div class="rsb">발자국 '+(p.steps||0)*7+'개 · 미션 '+(p.bingoCount||0)+'/5</div>';
     row.innerHTML=
-      '<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div>'+
-      '<div class="rinf">'+
-        '<div class="rnm">'+p.name+(id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</div>'+
-        '<div class="rsb">발자국 '+(p.steps||0)*7+'개 · 미션 '+(p.bingoCount||0)+'/5</div>'+
-      '</div>'+
-      '<div class="rds" style="color:'+(p.arrived?'#3B6D11':'var(--tx2)')+'">'+dt+'</div>';
+      '<div class="ravt" style="background:'+p.color+'30">'+(p.arrived?'😊':'🚶')+'</div>';
+    row.appendChild(rinfo);
+    var distEl=document.createElement('div');
+    distEl.className='rds';distEl.style.color=p.arrived?'#3B6D11':'var(--tx2)';
+    distEl.textContent=dt;
+    row.appendChild(distEl);
+    var delBtn=document.createElement('button');
+    delBtn.className='delBtn';delBtn.textContent='삭제';
+    delBtn.onclick=function(e){e.stopPropagation();deletePlayer(id);};
+    row.appendChild(delBtn);
     l.appendChild(row);
   });
 }
 
-// ── 랭킹 UI ──
-function updRank(){
-  var list=document.getElementById('rankList');
-  if(!list)return;
+// ── 멤버 삭제 ──
+function deletePlayer(id){
+  var p=players[id];
+  var name=p&&p.name?p.name:'해당 멤버';
+  if(!confirm(name+'님을 명단에서 삭제할까요?'))return;
 
-  // 정렬: 빙고 수 → 발자국 수
-  var sorted=Object.values(players).sort(function(a,b){
-    var bc=(b.bingoCount||0)-(a.bingoCount||0);
-    if(bc!==0)return bc;
-    return (b.steps||0)-(a.steps||0);
-  });
+  // Firebase에서 플레이어 + 발자국 경로 삭제
+  fbDelete('rooms/'+roomCode+'/players/'+id);
+  fbDelete('rooms/'+roomCode+'/trails/'+id);
 
-  var maxBingo=sorted.length>0?(sorted[0].bingoCount||0):5;
-  if(maxBingo===0)maxBingo=5;
-
-  list.innerHTML='';
-  if(sorted.length===0){
-    list.innerHTML='<div style="font-size:.8rem;color:var(--tx3);text-align:center;padding:1rem">아직 참여자가 없어요</div>';
-    return;
+  if(id===myId){
+    stopAll();clearSession();
+    if(myOvl){myOvl.setMap(null);myOvl=null;}
   }
+  if(ovls[id]){ovls[id].setMap(null);delete ovls[id];}
+  if(polylines[id]){polylines[id].setMap(null);delete polylines[id];}
+  delete polylinePaths[id];
+  delete players[id];
 
+  updRoster();updRank();
+  showToast(name+'님을 삭제했어요.');
+
+  if(id===myId){
+    setTimeout(function(){location.href=location.origin+location.pathname;},800);
+  }
+}
+
+// ── 랭킹 ──
+function updRank(){
+  var list=document.getElementById('rankList');if(!list)return;
+  var sorted=Object.values(players).sort(function(a,b){
+    var d=(b.bingoCount||0)-(a.bingoCount||0);
+    return d!==0?d:(b.steps||0)-(a.steps||0);
+  });
+  list.innerHTML='';
+  if(!sorted.length){list.innerHTML='<div style="font-size:.8rem;color:var(--tx3);text-align:center;padding:1rem">아직 참여자가 없어요</div>';return;}
+  var medals=['','🎖️','⭐','✨','🌟','🏆'];
   sorted.forEach(function(p,i){
     var row=document.createElement('div');row.className='rank-row';
-    var rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-n';
-    var rankLabel=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'';
+    var rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+    var rl=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'';
     var bc=p.bingoCount||0;
-    var barW=Math.round((bc/5)*100);
-    var medals=['','🎖️','⭐','✨','🌟','🏆'];
-    var badge=bc>0?medals[bc]||'🏆':'';
-
+    var bw=Math.round(bc/5*100);
+    var badge=bc>0?(medals[bc]||'🏆'):'';
     row.innerHTML=
-      '<div class="rank-num '+rankClass+'">'+rankLabel+'</div>'+
+      '<div class="rank-num '+rc+'">'+rl+'</div>'+
       '<div style="width:10px;height:10px;border-radius:50%;background:'+p.color+';flex-shrink:0;border:1.5px solid rgba(0,0,0,.1)"></div>'+
       '<div class="rank-bar-wrap">'+
         '<div class="rank-info">'+
           '<span class="rank-name">'+p.name+(p.id===myId?' <span style="font-size:.65rem;color:var(--tx3)">(나)</span>':'')+'</span>'+
           '<span class="rank-score">'+badge+' '+bc+'/5 미션</span>'+
         '</div>'+
-        '<div class="rank-bar-bg"><div class="rank-bar" style="width:'+barW+'%;background:'+p.color+'"></div></div>'+
+        '<div class="rank-bar-bg"><div class="rank-bar" style="width:'+bw+'%;background:'+p.color+'"></div></div>'+
         '<div style="font-size:.65rem;color:var(--tx3);margin-top:2px">발자국 '+(p.steps||0)*7+'개 · '+(p.arrived?'✅ 도착':'출근 중')+'</div>'+
       '</div>';
     list.appendChild(row);
@@ -560,8 +679,7 @@ function updRank(){
 
 // ── 이벤트 ──
 function addEv(type,msg,tag){
-  var f=document.getElementById('eventFeed');
-  var r=document.createElement('div');r.className='erow';
+  var f=document.getElementById('eventFeed'),r=document.createElement('div');r.className='erow';
   var now=new Date(),t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
   var tm={first:['챔피언','tf'],cross:['교차','tc'],bingo:['빙고','tb2'],arrive:['도착','ta']};
   var tl=tm[tag]?tm[tag][0]:'',tc=tm[tag]?tm[tag][1]:'';
@@ -571,16 +689,13 @@ function addEv(type,msg,tag){
 
 function focusPlayer(id){
   var p=players[id];
-  if(!p||!p.lat||!kMap){showToast('아직 위치 정보가 없어요.');return;}
-  kMap.setCenter(new kakao.maps.LatLng(p.lat,p.lng));
-  kMap.setLevel(3);
-  showToast(p.name+'님 위치로 이동했어요 🐾');
+  if(!p||!p.lat||!kMap){showToast('위치 정보가 없어요.');return;}
+  kMap.setCenter(new kakao.maps.LatLng(p.lat,p.lng));kMap.setLevel(3);
+  showToast(p.name+'님 위치로 이동 🐾');
 }
 
 function switchTab(tab){
-  document.querySelectorAll('.tb').forEach(function(b,i){
-    b.classList.toggle('active',['roster','events','bingo','rank'][i]===tab);
-  });
+  document.querySelectorAll('.tb').forEach(function(b,i){b.classList.toggle('active',['roster','events','bingo','rank'][i]===tab);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('panel-'+tab).classList.add('active');
   if(tab==='rank')updRank();
@@ -594,10 +709,12 @@ function stopAll(){
 }
 
 function leaveRoom(){
+  if(!confirm('방을 나가면 위치 공유가 중지돼요. 계속할까요?'))return;
+  saveMyTrail();
   stopAll();
   fbDelete('rooms/'+roomCode+'/players/'+myId);
+  clearSession();
   if(myOvl){myOvl.setMap(null);myOvl=null;}
-  if(polylines[myId]){polylines[myId].setMap(null);}
   delete players[myId];
   showToast('방을 나갔어요 👋');
   setTimeout(function(){location.href=location.origin+location.pathname;},800);
