@@ -126,6 +126,18 @@ input[type=text]:focus{border-color:var(--ac);background:#fff}
       <button class="btn bp" id="locBtn" onclick="requestLocation()">📍 위치 공유 허용</button>
       <button class="btn bs" onclick="useDemoPos()">데모 위치로 시작</button>
     </div>
+
+    <!-- step2-5: URL에 방 코드 없을 때 직접 입력 -->
+    <div id="step2b" style="display:none;text-align:center">
+      <div style="font-size:3rem;margin:.8rem 0">🚪</div>
+      <p style="font-size:.85rem;color:var(--tx2);line-height:1.6;margin-bottom:1rem">팀장에게 받은 방 코드를 입력해요<br>또는 새 방을 만들 수 있어요</p>
+      <div class="lbl" style="text-align:left">방 코드</div>
+      <input type="text" id="roomCodeInput" placeholder="예: ABCDE (5자리)" maxlength="6"
+        style="margin-bottom:12px;text-transform:uppercase;letter-spacing:3px;font-size:1.1rem;font-weight:700;text-align:center"
+        oninput="this.value=this.value.toUpperCase()"/>
+      <button class="btn bp" onclick="enterWithCode()">이 방으로 입장</button>
+      <button class="btn bs" onclick="createNewRoom()">새 방 만들기</button>
+    </div>
     <div id="step3" style="display:none;text-align:center">
       <p style="font-size:.85rem;color:var(--tx2);margin-bottom:12px">동료에게 아래 링크를 공유해요!<br>같은 방이면 서로 지도에 보여요 🗺️</p>
       <div class="rbox">
@@ -332,7 +344,7 @@ function requestLocation(){
   navigator.geolocation.getCurrentPosition(
     function(pos){
       firstLat=pos.coords.latitude;firstLng=pos.coords.longitude;
-      showToast('위치 공유 허용됐어요 🐾');goStep3();
+      showToast('위치 공유 허용됐어요 🐾');checkRoomThenStep3();
     },
     function(err){
       btn.textContent='📍 위치 공유 허용';btn.disabled=false;
@@ -342,11 +354,39 @@ function requestLocation(){
     {enableHighAccuracy:true,maximumAge:0,timeout:15000}
   );
 }
-function useDemoPos(){goStep3();}
+function useDemoPos(){checkRoomThenStep3();}
+
+// URL에 방 코드 있으면 바로 step3, 없으면 방 코드 입력 화면(step2b)으로
+function checkRoomThenStep3(){
+  var urlRoom=new URLSearchParams(window.location.search).get('room');
+  if(urlRoom){
+    goStep3();
+  } else {
+    // 방 코드 입력 화면으로
+    document.getElementById('step2').style.display='none';
+    document.getElementById('step2b').style.display='block';
+  }
+}
+
+// 방 코드 직접 입력 후 입장
+function enterWithCode(){
+  var code=document.getElementById('roomCodeInput').value.trim().toUpperCase();
+  if(!code||code.length<3){showToast('방 코드를 입력해주세요 (3자 이상)');return;}
+  // URL 업데이트 (뒤로가기/새로고침 시 방 코드 유지)
+  history.replaceState(null,'','?room='+code);
+  goStep3();
+}
+
+// 새 방 만들기
+function createNewRoom(){
+  var newCode=Math.random().toString(36).slice(2,7).toUpperCase();
+  history.replaceState(null,'','?room='+newCode);
+  goStep3();
+}
 
 function goStep3(){
   var urlRoom=new URLSearchParams(window.location.search).get('room');
-  roomCode=urlRoom||Math.random().toString(36).slice(2,7).toUpperCase();
+  roomCode=urlRoom; // 반드시 URL에서 가져옴 (checkRoomThenStep3에서 보장)
   document.getElementById('step2').style.display='none';
   document.getElementById('step3').style.display='block';
   document.getElementById('sd2').className='dot dn';
