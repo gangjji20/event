@@ -193,6 +193,8 @@ var MAX_TRAIL=300; // 최대 발자국 포인트 수
 // ── 상태 ──
 var myId='',myName='',myColor=PASTELS[0].hex,mySteps=0;
 var roomCode='',players={},hits=[false,false,false,false,false];
+var kicked=false; // 내가 삭제됐는지 여부
+var kickedIds={}; // 삭제된 다른 멤버 ID 목록
 var firstClaim=false,crossed={},toastT=null;
 var kMap=null,myOvl=null,ovls={},lastLL=null;
 var firstLat=null,firstLng=null;
@@ -500,6 +502,7 @@ function demoMove(){
 
 function updatePos(lat,lng){
   if(!kMap)return;
+  if(kicked)return; // 삭제된 기기는 더 이상 쓰기 안 함
 
   // 발자국 추가
   addPoint(myId,lat,lng,myColor);
@@ -577,11 +580,26 @@ function startPolling(){
   pollingStarted=true;
 
   pollingTimer=setInterval(function(){
+    // 내가 kicked됐는지 먼저 확인
+    if(!kicked){
+      fbGet('rooms/'+roomCode+'/kicked/'+myId).then(function(data){
+        if(data&&data.kicked){
+          kicked=true;
+          stopAll();
+          clearSession();
+          showToast('관리자에 의해 퇴장됐어요. 다시 입장해주세요.');
+          setTimeout(function(){location.href=location.origin+location.pathname;},2000);
+        }
+      });
+    }
+
     // 플레이어 위치 폴링
     fbGet('rooms/'+roomCode+'/players').then(function(data){
       if(!data)return;
       Object.keys(data).forEach(function(id){
         var p=data[id];if(id===myId)return;
+        // kicked된 플레이어 데이터는 무시 (재생성 방지)
+        if(kickedIds[id])return;
         var prev=players[id];
         if(!prev){
           players[id]=Object.assign({},p,{id:id});
@@ -686,12 +704,20 @@ function deletePlayer(id){
   var name=p&&p.name?p.name:'해당 멤버';
   if(!confirm(name+'님을 명단에서 삭제할까요?'))return;
 
-  // Firebase에서 플레이어 + 발자국 경로 + 빙고 데이터 삭제
-  fbDelete('rooms/'+roomCode+'/players/'+id);
-  fbDelete('rooms/'+roomCode+'/trails/'+id);
-  fbDelete('rooms/'+roomCode+'/bingos/'+id);
+  // 1. kicked 플래그 먼저 기록 → 해당 기기가 감지하고 즉시 쓰기 중단
+  kickedIds[id]=true; // 로컬에서도 즉시 차단
+  fbSet('rooms/'+roomCode+'/kicked/'+id, {kicked:true, at:Date.now()});
 
+  // 2. 500ms 후 데이터 삭제 (kicked 기록 후 삭제해야 재생성 방지)
+  setTimeout(function(){
+    fbDelete('rooms/'+roomCode+'/players/'+id);
+    fbDelete('rooms/'+roomCode+'/trails/'+id);
+    fbDelete('rooms/'+roomCode+'/bingos/'+id);
+  }, 500);
+
+  // 3. 로컬에서 즉시 제거
   if(id===myId){
+    kicked=true;
     stopAll();clearSession();
     if(myOvl){myOvl.setMap(null);myOvl=null;}
   }
