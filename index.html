@@ -275,21 +275,35 @@ buildPicker();
 function restoreSession(){
   var sess=loadSession();
   var urlRoom=new URLSearchParams(window.location.search).get('room');
-  myId=sess.id;
-  myName=sess.name;
-  myColor=sess.color;
-  roomCode=urlRoom||sess.room;
-  hits=sess.hits;
-  mySteps=sess.steps||0;
-  buildPicker(myColor);
+  var resolvedRoom=urlRoom||sess.room;
+
   document.getElementById('restoreBanner').style.display='none';
 
-  // 로비 건너뛰고 바로 지도로
-  document.getElementById('lobby').classList.remove('active');
-  document.getElementById('mapscreen').classList.add('active');
-  if(!window.kakao||!kakao.maps){showToast('카카오맵 로딩 중...');return;}
-  kakao.maps.load(function(){
-    try{initMap();}catch(e){showToast('지도 오류: '+e.message);}
+  // kicked된 ID인지 먼저 확인
+  fbGet('rooms/'+resolvedRoom+'/kicked/'+sess.id).then(function(data){
+    if(data&&data.kicked){
+      // kicked된 세션 → 강제 새 세션으로 전환
+      clearSession();
+      showToast('이전 세션이 만료됐어요. 새로 입장해주세요.');
+      myId='u_'+Math.random().toString(36).slice(2,8);
+      document.getElementById('step1').style.display='block';
+      return;
+    }
+    // 정상 세션 복원
+    myId=sess.id;
+    myName=sess.name;
+    myColor=sess.color;
+    roomCode=resolvedRoom;
+    hits=sess.hits;
+    mySteps=sess.steps||0;
+    buildPicker(myColor);
+
+    document.getElementById('lobby').classList.remove('active');
+    document.getElementById('mapscreen').classList.add('active');
+    if(!window.kakao||!kakao.maps){showToast('카카오맵 로딩 중...');return;}
+    kakao.maps.load(function(){
+      try{initMap();}catch(e){showToast('지도 오류: '+e.message);}
+    });
   });
 }
 
@@ -707,6 +721,8 @@ function deletePlayer(id){
   // 1. kicked 플래그 먼저 기록 → 해당 기기가 감지하고 즉시 쓰기 중단
   kickedIds[id]=true; // 로컬에서도 즉시 차단
   fbSet('rooms/'+roomCode+'/kicked/'+id, {kicked:true, at:Date.now()});
+  // 60초 후 자동 해제 → 같은 ID로 재입장 허용
+  setTimeout(function(){ delete kickedIds[id]; }, 60000);
 
   // 2. 500ms 후 데이터 삭제 (kicked 기록 후 삭제해야 재생성 방지)
   setTimeout(function(){
