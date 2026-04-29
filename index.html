@@ -391,10 +391,23 @@ function initMap(){
     });
   }
 
-  // 기존 발자국 경로 불러오기
-  loadAllTrails(function(){
-    startGPS();
-    startPolling();
+  // ① 지도 열자마자 모든 사람의 기존 빙고 데이터 즉시 로드
+  fbGet('rooms/'+roomCode+'/bingos').then(function(bingoData){
+    if(bingoData){
+      Object.keys(bingoData).forEach(function(id){
+        if(id===myId)return;
+        var b=bingoData[id];if(!b)return;
+        if(!players[id])players[id]={id:id,name:b.name,color:b.color,steps:0,arrived:false};
+        players[id].bingoCount=b.count||0;
+        players[id].bingoHits=(b.hits||[]).map(function(h){return !!h;});
+      });
+      updRank();
+    }
+    // ② 빙고 로드 완료 후 발자국 경로 불러오기 → GPS → 폴링 시작
+    loadAllTrails(function(){
+      startGPS();
+      startPolling();
+    });
   });
 
   saveSession();
@@ -563,20 +576,6 @@ function startPolling(){
   if(pollingStarted)return;
   pollingStarted=true;
 
-  // 입장 시 기존 빙고 데이터 즉시 로드
-  fbGet('rooms/'+roomCode+'/bingos').then(function(data){
-    if(!data)return;
-    Object.keys(data).forEach(function(id){
-      if(id===myId)return;
-      var b=data[id];
-      if(!b)return;
-      if(!players[id])players[id]={id:id,name:b.name,color:b.color,steps:0,arrived:false};
-      players[id].bingoCount=b.count||0;
-      players[id].bingoHits=(b.hits||[]).map(function(h){return !!h;});
-    });
-    updRank();
-  });
-
   pollingTimer=setInterval(function(){
     // 플레이어 위치 폴링
     fbGet('rooms/'+roomCode+'/players').then(function(data){
@@ -586,6 +585,8 @@ function startPolling(){
         var prev=players[id];
         if(!prev){
           players[id]=Object.assign({},p,{id:id});
+          // 이미 로드된 빙고 데이터가 있으면 병합
+          if(players[id].bingoCount===undefined)players[id].bingoCount=0;
           ovls[id]=mkPOvl(p.lat,p.lng,p.name,p.color,false);
           addEv('join',p.name+'님이 참여했어요!',null);
           showToast('🐾 '+p.name+'님이 출근 시작!');
